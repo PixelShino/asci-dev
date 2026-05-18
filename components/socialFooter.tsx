@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 
 const SOCIAL_LINKS = [
   { label: "GH", href: "https://github.com/pixelshino", title: "GitHub" },
-  { label: "TG", href: "https://t.me/pixelshino", title: "Telegram" }, // Твой рабочий ТГ линк
+  { label: "TG", href: "https://t.me/pixelshino", title: "Telegram" },
 ];
 
 const STYLES = {
@@ -25,7 +25,6 @@ export function SocialFooter() {
     <footer className={STYLES.footer}>
       <div className={STYLES.wrapper}>
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          {/* БЛОК ССЫЛОК */}
           <div className="flex items-center gap-4">
             <span className="text-zinc-400 dark:text-zinc-500 text-sm font-bold">
               {t("connect")}:
@@ -45,7 +44,6 @@ export function SocialFooter() {
             </div>
           </div>
 
-          {/* СИСТЕМНЫЙ СТАТУС */}
           <div className={STYLES.statusBlock}>
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
@@ -56,7 +54,6 @@ export function SocialFooter() {
           </div>
         </div>
 
-        {/* ИМИТАЦИЯ ТЕРМИНАЛЬНОЙ СТРОКИ */}
         <div className={STYLES.terminalLine}>
           <span className="text-purple-600 dark:text-purple-400 font-bold">
             guest@portfolio

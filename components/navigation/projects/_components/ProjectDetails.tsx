@@ -27,7 +27,6 @@ const STYLES = {
   bullet: "text-purple-600 dark:text-purple-400 mr-2 font-bold",
   galleryBox:
     "border border-zinc-400/20 p-3 bg-white dark:bg-zinc-950/10 rounded-sm",
-  // ИСПРАВЛЕНО: Изменили стили под некликабельную статус-строку приватного репозитория
   btnGithub:
     "border border-zinc-400/30 dark:border-zinc-800 text-zinc-400 dark:text-zinc-600 p-3 flex items-center justify-center gap-2 text-sm font-bold tracking-wider rounded-sm bg-zinc-100/50 dark:bg-zinc-950/30 select-none",
 };
@@ -76,7 +75,6 @@ export function ProjectDetails({ project, onBack }: Props) {
         </div>
       </div>
 
-      {/* ИСПРАВЛЕНО: Теперь тут вывод безопасного закрытого репозитория с SVG-замочком */}
       <div className={STYLES.btnGithub}>
         <svg
           xmlns="http://www.w3.org/2000/svg"

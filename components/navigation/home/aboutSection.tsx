@@ -11,7 +11,6 @@ function Typewriter({ text, delay = 0 }: { text: string; delay?: number }) {
   const [output, setOutput] = useState("");
 
   useEffect(() => {
-    // ИСПРАВЛЕНО: Теперь переменные хранят тип возвращаемого значения таймеров, а не саму функцию
     let timeout: ReturnType<typeof setTimeout>;
     let interval: ReturnType<typeof setInterval>;
 
