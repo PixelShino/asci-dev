@@ -3,7 +3,12 @@
 import { useTranslations } from "next-intl";
 import { SkillIcon } from "@/components/ui/skill-icon";
 
-type Skill = { id: string; name: string; customImage?: string };
+type Skill = {
+  id: string;
+  name: string;
+  customImage?: string;
+  textOnly?: boolean;
+};
 type CategoryKey = "frontend" | "backend" | "tools";
 type Category = { key: CategoryKey; label: string; skills: Skill[] };
 
@@ -34,8 +39,8 @@ const SKILL_CATEGORIES: Category[] = [
       { id: "ts", name: "TypeScript" },
       { id: "js", name: "JavaScript" },
       { id: "redis", name: "redis" },
-      { id: "bullmq", name: "bullmq", customImage: "/skill/bullmq.png" },
-      { id: "zod", name: "zod" },
+      { id: "bullmq", name: "bullmq", textOnly: true },
+      { id: "zod", name: "zod", textOnly: true },
     ],
   },
   {
@@ -54,7 +59,7 @@ const SKILL_CATEGORIES: Category[] = [
       { id: "coolify", name: "Coolify", customImage: "/skill/coolify.png" },
       { id: "postman", name: "Postman" },
       { id: "tuna", name: "tuna tunnel", customImage: "/skill/tuna.png" },
-      { id: "i18n", name: "i18n" },
+      { id: "i18n", name: "i18n", textOnly: true },
       { id: "notion", name: "notion" },
       { id: "npm", name: "NPM" },
       { id: "pnpm", name: "PNPM" },
@@ -108,6 +113,7 @@ export function SkillsGrid() {
                   label={skill.name}
                   size={42}
                   customImage={skill.customImage}
+                  textOnly={skill.textOnly}
                 />
               ))}
             </div>

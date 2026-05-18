@@ -9,9 +9,16 @@ interface Props {
   label: string;
   size?: number;
   customImage?: string;
+  textOnly?: boolean; // Добавили новый необязательный проп
 }
 
-export function SkillIcon({ id, label, size = 42, customImage }: Props) {
+export function SkillIcon({
+  id,
+  label,
+  size = 42,
+  customImage,
+  textOnly = false,
+}: Props) {
   const iconUrl =
     customImage || `https://skillicons.dev/icons?i=${id}&theme=dark`;
 
@@ -29,10 +36,11 @@ export function SkillIcon({ id, label, size = 42, customImage }: Props) {
 
   const currentMode = isActiveInCurrentCycle ? globalMode : "normal";
 
+  // Стилизованный текстовый fallback (сделали его рамку чуть тоньше и аккуратнее под дизайн сетки)
   const TextFallback = () => (
     <div
       style={{ width: size, height: size }}
-      className="flex items-center justify-center border border-[#b026ff]/50 bg-[#b026ff]/10 text-[#b026ff] font-mono text-[10px] font-bold uppercase overflow-hidden">
+      className="flex items-center justify-center border border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-mono text-[9px] font-extrabold uppercase overflow-hidden tracking-tighter select-none rounded-xs shadow-[0_0_8px_rgba(168,85,247,0.05)]">
       {label.substring(0, 3)}
     </div>
   );
@@ -41,7 +49,8 @@ export function SkillIcon({ id, label, size = 42, customImage }: Props) {
     className: string = "",
     handleErrors: boolean = false,
   ) => {
-    if (hasError) return <TextFallback />;
+    // ИСПРАВЛЕНО: Если включен режим textOnly или упала ошибка сети, сразу рендерим текст
+    if (textOnly || hasError) return <TextFallback />;
 
     return (
       <img
@@ -56,11 +65,13 @@ export function SkillIcon({ id, label, size = 42, customImage }: Props) {
   };
 
   return (
-    <div className="group relative flex flex-col items-center justify-center w-[50px] aspect-square">
+    <div className="group relative flex flex-col items-center justify-center w-12.5 aspect-square">
+      {/* Верхний всплывающий терминальный тултип */}
       <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-150 z-50 pointer-events-none origin-bottom">
         <div className="bg-[#000000] border border-[#b026ff] px-2 py-1 shadow-[0_0_10px_rgba(176,38,255,0.3)]">
           <p className="text-[10px] text-[#b026ff] whitespace-nowrap font-mono uppercase tracking-wider">
-            {"> "}SRC: {label} {customImage && "(LOCAL)"}
+            {"> "}SRC: {label}{" "}
+            {textOnly ? "(RAW_TEXT)" : customImage ? "(LOCAL)" : "(NET_NODE)"}
           </p>
         </div>
       </div>
@@ -74,7 +85,7 @@ export function SkillIcon({ id, label, size = 42, customImage }: Props) {
 
         {currentMode === "glitch" && (
           <div className="relative" style={{ width: size, height: size }}>
-            {hasError ? (
+            {textOnly || hasError ? (
               <TextFallback />
             ) : (
               <>
@@ -93,7 +104,7 @@ export function SkillIcon({ id, label, size = 42, customImage }: Props) {
         )}
 
         {currentMode === "ascii" &&
-          (hasError ? (
+          (textOnly || hasError ? (
             <TextFallback />
           ) : (
             <AsciiImage

@@ -9,13 +9,13 @@ import { SocialFooter } from "@/components/socialFooter";
 import { ProjectsLayout } from "@/components/navigation/projects/layout";
 import { ContactForm } from "./navigation/contact/contactForm";
 import { AboutTab } from "./navigation/about/aboutTab";
+import { AiAssistant } from "./navigation/home/aiAssistant";
 
 const STYLES = {
   mainWrapper:
     "min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-200 font-mono relative scanlines transition-colors duration-300",
   header:
     "border-b border-purple-400/20 p-4 bg-white/80 dark:bg-black/50 backdrop-blur-md transition-colors duration-300",
-
   tabContainer:
     "min-h-[calc(100vh-280px)] border border-purple-400/20 p-6 bg-white dark:bg-zinc-900/30 rounded-sm transition-colors duration-300",
 };
@@ -52,10 +52,14 @@ export default function PortfolioClient() {
 
       <main className="max-w-7xl mx-auto p-6 relative z-10">
         <div className={activeTab === "HOME" ? "block" : "hidden"}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 min-h-[calc(100vh-280px)] animate-fadeIn">
-            <AsciModelViewer />
-            <div className="flex flex-col gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-[calc(100vh-280px)] animate-fadeIn items-stretch relative">
+            <div className="lg:col-span-5 h-full w-full">
+              <AsciModelViewer />
+            </div>
+
+            <div className="lg:col-span-7 flex flex-col gap-8 w-full">
               <AboutSection onContactClick={() => setActiveTab("CONTACT")} />
+              <AiAssistant />
               <SkillsGrid />
             </div>
           </div>

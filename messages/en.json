@@ -5,7 +5,7 @@
     "e2e": "END-TO-END: High-performance SaaS, MVP, and business logic development. Integrations: AmoCRM, YooKassa, Robokassa.",
     "frontend": "FRONTEND: SPA/SSR architecture. Advanced UI/UX systems, custom animations, and WebGL/3D (React Three Fiber).",
     "backend": "BACKEND: Relational & NoSQL database schema design. Async process optimization (workers, webhooks, data parsing).",
-    "infrastructure": "INFRASTRUCTURE: Containerization (Docker), web servers (Nginx), process management (PM2), and SSL certification.",
+    "devops": "INFRASTRUCTURE: Containerization (Docker), web servers (Nginx), process management (PM2), and SSL certification.",
     "years_exp": "YEARS_EXP",
     "projects": "PROJECTS",
     "stack": "STACK",
@@ -39,19 +39,22 @@
   "About-tab": {
     "title": "CAT SYSTEM_CORE_PROFILE.MD --VERBOSE",
     "section_overview": "01 // DEVELOPMENT EXPERIENCE",
-    "overview_text": "3.5 years of commercial development experience. Specializing in scalable Fullstack applications (SSR/SPA) and integration layers. Core focus: fault-tolerant server architecture, end-to-end API integrations, database management, and CI/CD pipeline automation.",
+    "overview_text": "3.5 years of commercial Fullstack experience. Specializing in e2e-delivery of complex product features, high-performance SaaS scaling, e-commerce platforms, and deep Telegram ecosystem integration (Mini Apps / Bots). Focused on building resilient backend cores and securing web infrastructure.",
 
-    "section_workflow": "02 // WORKFLOW & LEGACY CODE APPROACH",
-    "workflow_text_1": "► Data-Driven Design: Analyze business logic and map out entity-relationship (ER) diagrams before writing code. Prioritize strict typing and service-oriented separation of concerns.",
-    "workflow_text_2": "► Legacy & Bug Tracking: Preventative approach to legacy code — write test coverage prior to refactoring, isolate outdated modules using patterns, and patch issues via rigorous checklist routines.",
+    "section_workflow": "02 // ENGINEERING APPROACH & ARCHITECTURE",
+    "workflow_text_1": "► System Design: Prioritize transactional safety at the database level (PostgreSQL/RPC), strict resource control (RLS/ACL policies), and building custom messaging engines to route traffic across concurrent microservices.",
+    "workflow_text_2": "► Deployment & Infrastructure: Experienced in deploying automation via self-hosted configurations (Docker, Coolify) and isolating bare-metal production environments via SSH. Ensure system fault tolerance using PM2 process persistence.",
 
-    "section_ai": "03 // AI ASSISTANCE & INTEGRATION",
-    "ai_text_1": "► Routine Optimization: Leverage AI (Gemini, Cursor) as a smart co-processor for bootstrapping boilerplate, dynamic UI generation, initial migrations, and unit tests, saving up to 40% of setup time.",
-    "ai_text_2": "► Quality Assurance: Utilize AI for heavy log parsing and anomaly detection. Architectural review, security auditing, and complex SQL query optimization remain strictly manual tasks.",
+    "section_ai": "03 // AI ASSISTANCE & SYSTEM INTEGRATION",
+    "ai_text_1": "► Development Co-processor: Leverage advanced LLMs to bootstrap boilerplate code, generate configuration assets, and significantly speed up initial prototyping during setup routines.",
+    "ai_text_2": "► Telemetry Parsing: Utilize AI as a utility tool for auditing heavy log outputs and tracking runtime anomalies. Core architecture design, security audits, and complex SQL query optimization remain strictly manual tasks.",
 
-    "section_hobby": "04 // HOMELAB & HOME AUTOMATION",
-    "hobby_text_1": "► Network Infrastructure: Architect and manage custom local network environments. Deploy dedicated routing gateways and secure VPN tunnels to maintain seamless access and eliminate environment conflicts.",
-    "hobby_text_2": "► Self-Hosted Ecosystems: Maintain local media servers (Jellyfin) and cloud microservices packed into Docker environments. Automate automated data backups, lifecycle management, and storage arrays."
+    "section_hobby": "04 // HOMELAB & NETWORK INFRASTRUCTURE",
+    "hobby_text_1": "► Secure Routing: Manage a home network stack utilizing custom-configured VPN tunnels and routing gateways to eliminate environment network overlap and ensure stable access.",
+    "hobby_text_2": "► Self-Hosted Ecosystems: Maintain dedicated local media repositories (Jellyfin) and microservices in isolated Docker containers with automated backup and storage optimization.",
+
+    "section_edu": "05 // EDUCATION & QUALIFICATIONS",
+    "edu_text": "► VSUET - Information Systems and Programming (Vocational Degree). Foundational knowledge in computer science, software engineering core standards, and algorithmic layout (Graduated 2023)."
   },
   "Footer": {
     "connect": "CONNECT",
@@ -59,62 +62,63 @@
     "thanks_msg": "Thanks for visiting"
   },
   "Skills": {
-    "title": "SYSTEM_SKILLS █",
+    "title": "SYSTEM_SKILLS",
     "frontend": "FRONT-END",
     "backend": "BACK-END",
     "tools": "TOOLS"
   },
   "Projects": {
-    "features_label": "FEATURES:",
-    "stack_label": "TECH_STACK:",
+    "features_label": "KEY SOLUTIONS:",
+    "stack_label": "ARCHITECTURAL STACK:",
+    "github_private": "[ REPOSITORY CLASSIFIED / PRIVATE ]",
     "t-catalog-admin": {
-      "title": "T-Catalog — Admin Panel",
-      "shortDesc": "Internal ERP/CRM management dashboard for administrators.",
-      "fullDesc": "A secure portal for content orchestrating, data moderation, and event analysis. Features advanced data grid processing, role-based controls, and custom analytics graphs.",
+      "title": "T-Catalog - Management Dashboard",
+      "shortDesc": "Multi-tenant ERP/CRM platform with visual business logic programming engines.",
+      "fullDesc": "An administrative console for marketplace orchestrators. Built a visual workflow node builder (event-driven checkout modal sequences, conditional logic triggers, custom package exchange rules). Integrated advanced SKU modification matrices for apparel (size grids, height, color variants with independent stock tracking), legal onboarding workflows (KYC entity validation via tax numbers), custom status managers, and automated SMTP routing.",
       "features": {
-        "0": "Role-Based Access Control (RBAC)",
-        "1": "High-performance CRUD routines",
-        "2": "Automated data exporting & logging"
+        "0": "Visual workflow builder managing sequential conditional logic and custom checkout checkout steps",
+        "1": "Multi-attribute SKU variation matrices handling size grids, height, and independent inventory limits",
+        "2": "Granular promotional coupon engine supporting multi-level usage caps and specific order thresholds"
       }
     },
     "t-catalog-client": {
-      "title": "T-Catalog — Client Application",
-      "shortDesc": "High-performance storefront client application.",
-      "fullDesc": "Public-facing digital catalog with comprehensive SEO optimizations and server-side rendering pipelines. Configured with dynamic faceted search and localized routing.",
+      "title": "T-Catalog - Storefront Application",
+      "shortDesc": "High-performance E-commerce client running as a Telegram Mini App.",
+      "fullDesc": "A storefront application fully optimized for embedded runtime constraints. Dynamically parses and renders structural JSON node sequences generated by the admin's visual logic builder (handling custom container deposit logic and dynamic checklist prompts). Supports instant processing of complex product variations, database-level coupon validation, and native Telegram UI elements.",
       "features": {
-        "0": "Server-Side Rendering (SSR)",
-        "1": "Core Web Vitals performance scaling",
-        "2": "Payment provider system integrations"
+        "0": "Dynamic client-side parsing of conditional checkout workflows configured via the visual node builder",
+        "1": "Integration of multi-attribute variation filters matched with database-level pricing snapshots",
+        "2": "Context-aware routing seamlessly mapped to native Telegram UI (BackButton, openLink)"
       }
     },
     "rulme-admin": {
-      "title": "Rulme — Operator Dashboard",
-      "shortDesc": "Administrative back-office console for booking dispatchers.",
-      "fullDesc": "Dispatch management interface for supervising an on-demand automotive services marketplace. Enables real-time chat monitoring, master registration vetting, and financial verification.",
+      "title": "Rulme - Operator Console",
+      "shortDesc": "Administrative command center for dispatching automotive service marketplace requests.",
+      "fullDesc": "A real-time dispatch dashboard monitoring active pipelines and managing service listings. Designed with a dedicated capture view for partial or unsubmitted application forms. Aggregates live transaction logs, master registration records, and allows operators to audit financial flows without delay.",
       "features": {
-        "0": "Live order dispatch pipelines",
-        "1": "Transaction auditing interfaces",
-        "2": "Core business metrics analysis layout"
+        "0": "Incomplete form intercept layout designed to recover drop-off leads at early funnel stages",
+        "1": "Centralized messaging engine dispatching telemetry payloads across a multi-bot system",
+        "2": "Analytical tracking layer for user segment classification and telemetry access logs"
       }
     },
     "rulme-client": {
-      "title": "Rulme — Customer Ecosystem",
-      "shortDesc": "Telegram Mini App for on-demand automotive technician search.",
-      "fullDesc": "An interactive digital product serving car owners seeking technical help. Features concurrent real-time chat spaces via Supabase, unified userId transitions, and custom anonymous onboarding pipelines.",
+      "title": "Rulme - Customer Interface",
+      "shortDesc": "Telegram Mini App automotive marketplace with integrated conversion tracking loops.",
+      "fullDesc": "An interactive vehicle repair matching app. Implemented a multi-step checkout with implicit background payload tracking: the system captures user contacts at stage one and logs details if the vehicle specification stage is abandoned. Monitors active carts to catch and display unsubmitted 24-hour-old requests.",
       "features": {
-        "0": "Supabase Realtime messaging",
-        "1": "Custom Guest Registration flow",
-        "2": "Strict separation of welcome and referral triggers"
+        "0": "Multi-stage checkout with silent background state caching to capture partial leads",
+        "1": "Automatic session classification indexing idle users and aging incomplete carts",
+        "2": "Custom-built Media Viewer for order attachments with real-time API-level ACL validation"
       }
     },
     "bitovki36": {
-      "title": "Bitovki 36 CRM",
-      "shortDesc": "Corporate operational dashboard for industrial logistics.",
-      "fullDesc": "Tailored enterprise engine focused on supply chain execution, tracking inventory values, and unifying production documentation logs.",
+      "title": "Bitovki 36 - Corporate CRM",
+      "shortDesc": "Enterprise logistics management framework for industrial supply chains.",
+      "fullDesc": "Internal operational platform handling storage audits, automated contract logic, and inventory flows. Built a complete amoCRM data integration layer entirely via API reverse-engineering. Deployed the application into an isolated local network loop featuring automated SSL rotation routines.",
       "features": {
-        "0": "Inventory management pipelines",
-        "1": "Automated contract & invoice generation",
-        "2": "Process supervision via PM2 triggers"
+        "0": "Two-way asset synchronization and webhook ingestion mapping undocumented amoCRM endpoints",
+        "1": "System-level process persistence recovering software runtime state under 1 minute via PM2",
+        "2": "Standalone Certbot SSL configuration over restricted port channels using DNS challenges"
       }
     }
   },
@@ -122,5 +126,11 @@
     "header_title": "Media Assets ({count})",
     "type_video": "Video",
     "btn_back": "Back"
+  },
+  "AiAssistant": {
+    "placeholder": "// AI coprocessor console active. Enter your request below or run [SYSTEM_SCAN].",
+    "loading": "[ CONNECTING_AI_CORE // WAITING_FOR_STREAM_CHUNKS... ]",
+    "error": "[ CRITICAL ERROR ]: DATA STREAM ROUTING FAILURE.",
+    "input_placeholder": "Ask a question to AI..."
   }
 }

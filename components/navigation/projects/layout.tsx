@@ -12,53 +12,102 @@ export type Project = {
   githubUrl: string;
   featureCount: number;
   instanceId?: string;
+  folderName: string;
 };
 
 const PROJECTS: Project[] = [
   {
     id: "t-catalog-admin",
-    techStack: ["React", "TypeScript", "Tailwind", "NestJS", "PostgreSQL"],
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "NestJS",
+      "PostgreSQL",
+      "BullMQ",
+      "Redis",
+      "Coolify",
+      "SMTP",
+      "Robokassa",
+      "YooKassa",
+    ],
     imageCount: 32,
     githubUrl: "https://github.com/...",
     featureCount: 3,
+    folderName: "t-catalog-admin",
   },
   {
     id: "t-catalog-client",
-    techStack: ["Next.js", "TypeScript", "Tailwind", "Redux Toolkit"],
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Tailwind",
+      "Redux Toolkit",
+      "Supabase",
+      "Coolify",
+      "ZOD",
+      "Grammy",
+    ],
     imageCount: 12,
     githubUrl: "https://github.com/...",
     featureCount: 3,
+    folderName: "t-catalog-client",
   },
   {
     id: "rulme-admin",
-    techStack: ["React", "TypeScript", "Node.js", "Supabase", "Tailwind"],
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Node.js",
+      "Supabase",
+      "Tailwind",
+      "Coolify",
+    ],
     imageCount: 8,
     githubUrl: "https://github.com/...",
     featureCount: 3,
+    folderName: "rulme-admin",
   },
   {
     id: "rulme-client",
-    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind", "PM2"],
-    imageCount: 2,
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "REST",
+      "TW",
+      "PM2",
+      "Grammy",
+      "Coolify",
+    ],
+    imageCount: 19,
     githubUrl: "https://github.com/...",
-    featureCount: 19,
+    featureCount: 3,
+    folderName: "rulme-client",
   },
   {
     id: "bitovki36",
-    techStack: ["React", "Next.js", "TypeScript", "Nginx", "Docker"],
-    imageCount: 6,
+    techStack: [
+      "Next.js",
+      "TypeScript",
+      "Supabase",
+      "TW",
+      "Docker",
+      "PM2",
+      "Grammy",
+    ],
+    imageCount: 7,
     githubUrl: "https://github.com/...",
     featureCount: 3,
+    folderName: "bitovki36",
   },
 ];
 
 const STYLES = {
-  // ИСПРАВЛЕНО: заменили dark:bg-black на dark:bg-zinc-900/30
   container:
     "min-h-[calc(100vh-280px)] border border-purple-400/20 p-4 md:p-6 flex flex-col gap-4 bg-zinc-50 dark:bg-zinc-900/30 transition-colors duration-300",
   title:
     "text-purple-600 dark:text-purple-400 mb-4 text-base md:text-lg font-bold tracking-wider",
-  grid: "grid grid-cols-3 gap-2 md:gap-6 w-full",
+  grid: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full",
   trigger:
     "h-12 w-full flex items-center justify-center text-xs text-zinc-400 font-mono tracking-widest uppercase select-none",
 };
@@ -87,7 +136,7 @@ export function ProjectsLayout() {
           ]);
         }
       },
-      { rootMargin: "0px" },
+      { rootMargin: "100px" },
     );
 
     const currentTrigger = triggerRef.current;
