@@ -15,18 +15,52 @@ function SceneContent({
   canvasBg,
   purpleCore,
   mode,
+  isMobile,
+  onFpsUpdate,
+  cameraFov,
 }: {
   isDark: boolean;
   canvasBg: string;
   purpleCore: string;
   mode: string;
+  isMobile: boolean;
+  onFpsUpdate: (fps: number) => void;
+  cameraFov: number;
 }) {
   const controlsRef = useRef<any>(null);
   const modelRef = useRef<any>(null);
   const isDragging = useRef(false);
+  const dragTimeoutRef = useRef<any>(null);
+
+  const fpsFrames = useRef(0);
+  const fpsLastTime = useRef(0);
+
+  const handleInteractionEnd = () => {
+    if (dragTimeoutRef.current) clearTimeout(dragTimeoutRef.current);
+    dragTimeoutRef.current = setTimeout(() => {
+      isDragging.current = false;
+    }, 300);
+  };
 
   useFrame((state) => {
-    const t = state.clock.elapsedTime;
+    const currentCamera = state.camera as any;
+    if (currentCamera.fov !== cameraFov) {
+      currentCamera.fov = cameraFov;
+      currentCamera.updateProjectionMatrix();
+    }
+
+    fpsFrames.current++;
+    const currentTime = state.clock.getElapsedTime();
+    if (currentTime - fpsLastTime.current >= 0.5) {
+      const calculatedFps = Math.round(
+        fpsFrames.current / (currentTime - fpsLastTime.current),
+      );
+      onFpsUpdate(calculatedFps);
+      fpsFrames.current = 0;
+      fpsLastTime.current = currentTime;
+    }
+
+    const t = state.clock.getElapsedTime();
 
     if (modelRef.current) {
       modelRef.current.rotation.y = 2.5 + Math.sin(t * 0.6) * 0.25;
@@ -37,9 +71,19 @@ function SceneContent({
       state.camera.position.y += (1.8 - state.camera.position.y) * 0.05;
       state.camera.position.z += (-4.8 - state.camera.position.z) * 0.05;
 
+      controlsRef.current.target.x += (0 - controlsRef.current.target.x) * 0.05;
+      controlsRef.current.target.y += (0 - controlsRef.current.target.y) * 0.05;
+      controlsRef.current.target.z += (0 - controlsRef.current.target.z) * 0.05;
+
       controlsRef.current.update();
     }
   });
+
+  useEffect(() => {
+    return () => {
+      if (dragTimeoutRef.current) clearTimeout(dragTimeoutRef.current);
+    };
+  }, []);
 
   return (
     <>
@@ -56,12 +100,13 @@ function SceneContent({
         ref={controlsRef}
         enableZoom={true}
         autoRotate={false}
+        enableDamping={true}
+        dampingFactor={0.05}
         onStart={() => {
+          if (dragTimeoutRef.current) clearTimeout(dragTimeoutRef.current);
           isDragging.current = true;
         }}
-        onEnd={() => {
-          isDragging.current = false;
-        }}
+        onEnd={handleInteractionEnd}
       />
 
       <Suspense fallback={null}>
@@ -75,7 +120,7 @@ function SceneContent({
           <Glitch
             delay={new Vector2(0, 0)}
             duration={new Vector2(0.1, 0.3)}
-            strength={new Vector2(0.2, 0.4)}
+            strength={isMobile ? new Vector2(0.1, 0.2) : new Vector2(0.2, 0.4)}
             mode={GlitchMode.SPORADIC}
             active
           />
@@ -88,7 +133,7 @@ function SceneContent({
           bgColor={canvasBg}
           characters=" .:-+*=%@#"
           invert={false}
-          resolution={0.15}
+          resolution={isMobile ? 0.11 : 0.15}
         />
       )}
     </>
@@ -99,15 +144,31 @@ export function AsciModelViewer() {
   const { mode } = useGlitch();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [realFps, setRealFps] = useState(60);
+  const [cameraFov, setCameraFov] = useState(25);
 
   useEffect(() => {
     setMounted(true);
 
-    const originalWarn = console.warn;
+    const checkMetrics = () => {
+      setIsMobile(window.innerWidth < 768);
 
+      if (window.innerHeight < 550) {
+        setCameraFov(17);
+      } else if (window.innerWidth < 480) {
+        setCameraFov(22);
+      } else {
+        setCameraFov(25);
+      }
+    };
+
+    checkMetrics();
+    window.addEventListener("resize", checkMetrics);
+
+    const originalWarn = console.warn;
     console.warn = (...args) => {
       const message = args.join(" ");
-
       if (
         message.includes("THREE.Clock") ||
         message.includes("deprecated") ||
@@ -116,12 +177,12 @@ export function AsciModelViewer() {
       ) {
         return;
       }
-
       originalWarn(...args);
     };
 
     return () => {
       console.warn = originalWarn;
+      window.removeEventListener("resize", checkMetrics);
     };
   }, []);
 
@@ -143,8 +204,10 @@ export function AsciModelViewer() {
           `,
           backgroundSize: "20px 20px",
         }}>
-        <div className="absolute inset-0 z-10">
-          <Canvas camera={{ position: [7.8, 1.8, -4.8], fov: 25 }}>
+        <div className="absolute inset-0 z-10 touch-none">
+          <Canvas
+            camera={{ position: [7.8, 1.8, -4.8], fov: cameraFov }}
+            dpr={isMobile ? [1, 1] : [1, 1.5]}>
             <color attach="background" args={[canvasBg]} />
 
             <SceneContent
@@ -152,6 +215,9 @@ export function AsciModelViewer() {
               canvasBg={canvasBg}
               purpleCore={purpleCore}
               mode={mode}
+              isMobile={isMobile}
+              onFpsUpdate={setRealFps}
+              cameraFov={cameraFov}
             />
           </Canvas>
         </div>
@@ -179,7 +245,7 @@ export function AsciModelViewer() {
                 ? "GLITCHING"
                 : "WEBGL_ACTIVE"}
           </span>
-          <span>FPS: 60</span>
+          <span>FPS: {realFps}</span>
           <span>CORE_V2</span>
         </div>
       </div>

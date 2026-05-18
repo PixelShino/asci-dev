@@ -10,6 +10,10 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // для дебага на телефоне
+  // experimental: {
+  //   allowedDevOrigins: ["*"],
+  // },
   async rewrites() {
     return [
       {

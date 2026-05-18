@@ -157,21 +157,26 @@ export function AiAssistant() {
         )}
       </div>
 
-      <form onSubmit={handleSubmit} className={STYLES.form}>
-        <span className={STYLES.prefix}>guest@ai-core:~$</span>
+      <form
+        onSubmit={handleSubmit}
+        className={`${STYLES.form} flex items-center w-full overflow-hidden gap-2`}>
+        <span className={`${STYLES.prefix} shrink-0 select-none text-[0.6rem]`}>
+          guest@ai-core:~$
+        </span>
+
         <input
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           disabled={aiStatus === "LOADING"}
           placeholder={t("input_placeholder")}
-          className={STYLES.input}
+          className={`${STYLES.input} flex-1 min-w-0 bg-transparent outline-none`}
         />
 
         <button
           type="submit"
           disabled={isInputEmpty || aiStatus === "LOADING"}
-          className={`${STYLES.sendBtn} ${
+          className={`${STYLES.sendBtn} shrink-0 ${
             isInputEmpty
               ? "text-zinc-400"
               : "text-purple-600 dark:text-purple-400 hover:scale-110 active:scale-95"
