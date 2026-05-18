@@ -4,6 +4,8 @@ import { useState, FormEvent } from "react";
 import { useGlitch } from "@/components/providers/glitch-provider";
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type AIProvider = "auto" | "gemini";
 
@@ -27,13 +29,15 @@ const STYLES = {
   placeholder:
     "text-zinc-400 dark:text-zinc-600 italic text-center select-none",
 
-  form: "flex items-center gap-3 border border-purple-400/20 bg-zinc-50 dark:bg-zinc-950 px-4 py-2.5 focus-within:border-purple-500/50 transition-colors rounded-xs relative group",
+  form: "flex items-stretch gap-2 sm:gap-3 border border-purple-400/20 bg-zinc-50 dark:bg-zinc-950 px-2.5 py-2 sm:px-4 sm:py-2.5 min-h-[52px] focus-within:border-purple-500/50 transition-colors rounded-xs",
   prefix:
-    "text-purple-500 dark:text-purple-400 text-sm font-bold select-none shrink-0",
+    "text-purple-500 dark:text-purple-400 text-[10px] sm:text-sm font-bold select-none shrink-0 self-center leading-none",
+  inputWrap:
+    "flex-1 min-w-0 flex items-center self-stretch min-h-[44px] cursor-text touch-manipulation",
   input:
-    "flex-1 bg-transparent border-none outline-none text-sm text-zinc-800 dark:text-zinc-100 font-mono placeholder-zinc-400 dark:placeholder-zinc-600 py-0",
+    "h-full w-full min-h-[44px] flex-1 border-0 shadow-none outline-none ring-0 rounded-none !bg-transparent dark:!bg-transparent text-sm sm:text-base text-zinc-800 dark:text-zinc-100 font-mono placeholder:text-zinc-400 dark:placeholder:text-zinc-600 px-2 sm:px-3 py-2.5 focus-visible:ring-0 focus-visible:border-transparent disabled:opacity-50",
   sendBtn:
-    "flex items-center justify-center text-sm font-bold p-1 -mr-1 rounded-xs transition-all duration-200 cursor-pointer disabled:opacity-20 select-none",
+    "shrink-0 self-center h-11 w-11 min-h-[44px] min-w-[44px] p-0 flex items-center justify-center text-base font-bold rounded-xs transition-all duration-200 disabled:opacity-20 select-none touch-manipulation hover:bg-purple-500/10 dark:hover:bg-purple-400/10",
 };
 
 export function AiAssistant() {
@@ -104,13 +108,15 @@ export function AiAssistant() {
             <div className={STYLES.selectorRow}>
               <span>src:</span>
               {(["auto", "gemini"] as AIProvider[]).map((p) => (
-                <button
+                <Button
                   key={p}
+                  type="button"
+                  variant="ghost"
                   onClick={() => setProvider(p)}
                   disabled={aiStatus === "LOADING"}
-                  className={`${STYLES.selectorBtn} ${provider === p ? "bg-purple-500 text-white dark:text-black font-extrabold" : "hover:text-zinc-800 dark:hover:text-zinc-200"}`}>
+                  className={`${STYLES.selectorBtn} h-auto min-w-0 p-0 ${provider === p ? "bg-purple-500 text-white dark:text-black font-extrabold" : "hover:text-zinc-800 dark:hover:text-zinc-200"}`}>
                   {p}
-                </button>
+                </Button>
               ))}
             </div>
             <span className="text-[8px] text-zinc-400 dark:text-zinc-500 select-none tracking-tight font-mono uppercase">
@@ -118,12 +124,14 @@ export function AiAssistant() {
             </span>
           </div>
 
-          <button
+          <Button
+            type="button"
+            variant="ghost"
             onClick={() => triggerAiQuery("")}
             disabled={aiStatus === "LOADING"}
             className="text-[10px] border border-purple-400/30 text-purple-600 dark:text-purple-400 px-2 py-0.5 hover:bg-purple-500/5 transition-all cursor-pointer rounded-xs select-none h-fit self-start">
             [SYSTEM_SCAN]
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -157,33 +165,39 @@ export function AiAssistant() {
         )}
       </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className={`${STYLES.form} flex items-center w-full overflow-hidden gap-2`}>
-        <span className={`${STYLES.prefix} shrink-0 select-none text-[0.6rem]`}>
-          guest@ai-core:~$
+      <form onSubmit={handleSubmit} className={STYLES.form}>
+        <span className={STYLES.prefix} aria-hidden>
+          <span className="sm:hidden">~$</span>
+          <span className="hidden sm:inline">guest@ai-core:~$</span>
         </span>
 
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          disabled={aiStatus === "LOADING"}
-          placeholder={t("input_placeholder")}
-          className={`${STYLES.input} flex-1 min-w-0 bg-transparent outline-none`}
-        />
+        <label htmlFor="ai-assistant-input" className={STYLES.inputWrap}>
+          <Input
+            id="ai-assistant-input"
+            type="text"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            disabled={aiStatus === "LOADING"}
+            placeholder={t("input_placeholder")}
+            className={STYLES.input}
+            enterKeyHint="send"
+            autoComplete="off"
+          />
+        </label>
 
-        <button
+        <Button
           type="submit"
+          variant="ghost"
           disabled={isInputEmpty || aiStatus === "LOADING"}
-          className={`${STYLES.sendBtn} shrink-0 ${
+          aria-label="Send"
+          className={`${STYLES.sendBtn} ${
             isInputEmpty
               ? "text-zinc-400"
               : "text-purple-600 dark:text-purple-400 hover:scale-110 active:scale-95"
           }`}
-          title="To send a request">
-          <span className="font-sans">➔</span>
-        </button>
+          title="Send">
+          <span className="font-sans leading-none">➔</span>
+        </Button>
       </form>
     </div>
   );

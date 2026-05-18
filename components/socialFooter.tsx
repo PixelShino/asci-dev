@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 
 const SOCIAL_LINKS = [
@@ -31,7 +32,7 @@ export function SocialFooter() {
             </span>
             <div className="flex items-center gap-2">
               {SOCIAL_LINKS.map((link) => (
-                <a
+                <Link
                   key={link.label}
                   href={link.href}
                   target="_blank"
@@ -39,7 +40,7 @@ export function SocialFooter() {
                   title={link.title}
                   className={STYLES.link}>
                   [{link.label}]
-                </a>
+                </Link>
               ))}
             </div>
           </div>

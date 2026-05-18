@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useGlitch } from "@/components/providers/glitch-provider";
 import { AsciiImage } from "./ascii-image";
 
@@ -9,7 +10,7 @@ interface Props {
   label: string;
   size?: number;
   customImage?: string;
-  textOnly?: boolean; // Добавили новый необязательный проп
+  textOnly?: boolean;
 }
 
 export function SkillIcon({
@@ -35,7 +36,6 @@ export function SkillIcon({
 
   const currentMode = isActiveInCurrentCycle ? globalMode : "normal";
 
-  // Стилизованный текстовый fallback (сделали его рамку чуть тоньше и аккуратнее под дизайн сетки)
   const TextFallback = () => (
     <div
       style={{ width: size, height: size }}
@@ -48,11 +48,10 @@ export function SkillIcon({
     className: string = "",
     handleErrors: boolean = false,
   ) => {
-    // ИСПРАВЛЕНО: Если включен режим textOnly или упала ошибка сети, сразу рендерим текст
     if (textOnly || hasError) return <TextFallback />;
 
     return (
-      <img
+      <Image
         src={iconUrl}
         alt={label}
         width={size}
@@ -65,7 +64,6 @@ export function SkillIcon({
 
   return (
     <div className="group relative flex flex-col items-center justify-center w-12.5 aspect-square">
-      {/* Верхний всплывающий терминальный тултип */}
       <div className="absolute -top-10 scale-0 group-hover:scale-100 transition-all duration-150 z-50 pointer-events-none origin-bottom">
         <div className="bg-[#000000] border border-[#b026ff] px-2 py-1 shadow-[0_0_10px_rgba(176,38,255,0.3)]">
           <p className="text-[10px] text-[#b026ff] whitespace-nowrap font-mono uppercase tracking-wider">

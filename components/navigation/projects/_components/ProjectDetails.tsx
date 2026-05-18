@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Project } from "../layout";
 import { TechBadges } from "./TechBadges";
 import { MediaViewer } from "@/components/mediaViewer";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   project: Project;
@@ -41,9 +42,13 @@ export function ProjectDetails({ project, onBack }: Props) {
 
   return (
     <div className={STYLES.container}>
-      <button onClick={onBack} className={STYLES.btnBack}>
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={onBack}
+        className={STYLES.btnBack}>
         {"<"} cd ..
-      </button>
+      </Button>
 
       <div className={STYLES.mainBox}>
         <h3 className={STYLES.title}>{t(`${project.id}.title`)}</h3>

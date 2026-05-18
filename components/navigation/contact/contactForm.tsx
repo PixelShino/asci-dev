@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const STYLES = {
   cardLeft:
@@ -74,33 +79,33 @@ export function ContactForm() {
           {/* TELEGRAM */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// TELEGRAM_COMM_LINK</span>
-            <a
+            <Link
               href="https://t.me/pixelshino"
               target="_blank"
               rel="noopener noreferrer"
               className={STYLES.contactLink}>
               [ @pixelshino ]
-            </a>
+            </Link>
           </div>
 
           {/* EMAIL */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// EMAIL_E_MAIL</span>
-            <a
+            <Link
               href="mailto:goldobin.dmitry@bk.ru"
               className={STYLES.contactLink}>
               goldobin.dmitry@bk.ru
-            </a>
+            </Link>
           </div>
 
           {/* PHONE */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// VOICE_CELL_LINE</span>
-            <a
+            <Link
               href="tel:+79192318930"
               className={`${STYLES.contactLink} tracking-wider`}>
               +7 (919) 231-89-30
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -130,26 +135,28 @@ export function ContactForm() {
             </div>
 
             <div className="pt-2 flex flex-wrap gap-4 items-center">
-              <a
+              <Link
                 href="https://mail.google.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={STYLES.btnMail}>
                 [ OPEN GMAIL ]
-              </a>
-              <a
+              </Link>
+              <Link
                 href="https://e.mail.ru"
                 target="_blank"
                 rel="noopener noreferrer"
                 className={STYLES.btnMail}>
                 [ OPEN MAIL.RU ]
-              </a>
+              </Link>
 
-              <button
+              <Button
+                type="button"
+                variant="link"
                 onClick={() => setStatus("IDLE")}
-                className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-purple-500 dark:hover:text-purple-400 transition-all underline underline-offset-4 ml-auto">
+                className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-purple-500 dark:hover:text-purple-400 transition-all underline underline-offset-4 ml-auto h-auto p-0">
                 {t("send_again")}
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -161,8 +168,8 @@ export function ContactForm() {
             <form onSubmit={handleSubmit} className="space-y-4 w-full">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className={STYLES.inputLabel}>// {t("name")}</label>
-                  <input
+                  <Label className={STYLES.inputLabel}>// {t("name")}</Label>
+                  <Input
                     required
                     name="name"
                     type="text"
@@ -170,8 +177,8 @@ export function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label className={STYLES.inputLabel}>// {t("phone")}</label>
-                  <input
+                  <Label className={STYLES.inputLabel}>// {t("phone")}</Label>
+                  <Input
                     name="phone"
                     type="tel"
                     className={STYLES.inputField}
@@ -180,8 +187,8 @@ export function ContactForm() {
               </div>
 
               <div>
-                <label className={STYLES.inputLabel}>// {t("email")}</label>
-                <input
+                <Label className={STYLES.inputLabel}>// {t("email")}</Label>
+                <Input
                   required
                   name="email"
                   type="email"
@@ -190,8 +197,8 @@ export function ContactForm() {
               </div>
 
               <div>
-                <label className={STYLES.inputLabel}>// {t("comment")}</label>
-                <textarea
+                <Label className={STYLES.inputLabel}>// {t("comment")}</Label>
+                <Textarea
                   required
                   name="comment"
                   rows={4}
@@ -205,12 +212,13 @@ export function ContactForm() {
                 </div>
               )}
 
-              <button
+              <Button
                 disabled={status === "LOADING"}
                 type="submit"
+                variant="ghost"
                 className={STYLES.btnSubmit}>
                 {status === "LOADING" ? t("sending") : t("send")}
-              </button>
+              </Button>
             </form>
           </div>
         )}

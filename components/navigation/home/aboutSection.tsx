@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 interface AboutSectionProps {
   onContactClick?: () => void;
@@ -123,11 +124,15 @@ export function AboutSection({ onContactClick }: AboutSectionProps) {
 
         {onContactClick && (
           <div className="pt-2">
-            <button onClick={onContactClick} className={STYLES.btnExecute}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onContactClick}
+              className={STYLES.btnExecute}>
               <span className="text-purple-600 dark:text-purple-400 font-bold ml-2 transition-all">
                 {t("contact")}
               </span>
-            </button>
+            </Button>
           </div>
         )}
       </div>

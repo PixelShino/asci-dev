@@ -354,7 +354,9 @@ export function MediaViewer({
                   ? STYLES.carouselItemWrapper
                   : STYLES.cardWrapper
               }>
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={(e) => openViewer(idx, e)}
                 className={STYLES.triggerBtn}>
                 {media.type === "image" ? (
@@ -383,7 +385,7 @@ export function MediaViewer({
                     )}
                   </div>
                 )}
-              </button>
+              </Button>
 
               {showDelete && onDelete && (
                 <Button
@@ -555,7 +557,9 @@ export function MediaViewer({
                     <CarouselItem
                       key={idx}
                       className="pl-3 basis-1/5 sm:basis-1/6 md:basis-1/8">
-                      <button
+                      <Button
+                        type="button"
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
                           setCurrentIndex(idx);
@@ -580,7 +584,7 @@ export function MediaViewer({
                             <Play className="h-5 w-5 text-purple-600 dark:text-purple-400 fill-purple-600 dark:fill-purple-400" />
                           </div>
                         )}
-                      </button>
+                      </Button>
                     </CarouselItem>
                   ))}
                 </CarouselContent>

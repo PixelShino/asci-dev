@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 
 interface TerminalNavProps {
   activeTab: string;
@@ -61,50 +62,60 @@ export function TerminalNav({ activeTab, onTabChange }: TerminalNavProps) {
             {TABS.map((tab) => {
               const isActive = activeTab === tab;
               return (
-                <button
+                <Button
                   key={tab}
+                  type="button"
+                  variant="ghost"
                   onClick={() => handleTabSelect(tab)}
-                  className={`text-sm px-4 py-2 border transition-all duration-200 ${
+                  className={`text-sm px-4 py-2 border rounded-none h-auto ${
                     isActive ? STYLES.tabActive : STYLES.tabInactive
                   }`}>
                   {"["} {t(tab.toLowerCase())} {"]"}
-                </button>
+                </Button>
               );
             })}
           </div>
 
-          <button
+          <Button
+            type="button"
+            variant="ghost"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 border border-purple-400/30 text-purple-500 dark:text-purple-400 hover:bg-purple-400/5 transition-all"
+            className="md:hidden flex items-center justify-center p-2 border border-purple-400/30 text-purple-500 dark:text-purple-400 hover:bg-purple-400/5 transition-all h-auto rounded-none"
             aria-label="Toggle menu">
             <span className="text-xs font-bold">
               [ {isMenuOpen ? t("close_menu") : t("open_menu")} ]
             </span>
-          </button>
+          </Button>
 
           <div className="flex items-center gap-6">
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 border border-purple-400/20 hover:border-purple-400/50 text-zinc-500 dark:text-zinc-400 hover:text-purple-500 text-xs transition-all tracking-widest uppercase min-w-30">
+              className="p-2 border border-purple-400/20 hover:border-purple-400/50 text-zinc-500 dark:text-zinc-400 hover:text-purple-500 text-xs transition-all tracking-widest uppercase min-w-30 h-auto rounded-none">
               {!mounted
                 ? t("loading")
                 : theme === "dark"
                   ? t("light_mode")
                   : t("dark_mode")}
-            </button>
+            </Button>
 
             <div className="flex items-center gap-2 text-sm select-none">
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => handleLocaleChange("en")}
-                className={`transition-colors ${currentLocale === "en" ? STYLES.langActive : STYLES.langInactive}`}>
+                className={`h-auto p-0 min-w-0 transition-colors ${currentLocale === "en" ? STYLES.langActive : STYLES.langInactive}`}>
                 EN
-              </button>
+              </Button>
               <span className="text-zinc-300 dark:text-zinc-700">|</span>
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => handleLocaleChange("ru")}
-                className={`transition-colors ${currentLocale === "ru" ? STYLES.langActive : STYLES.langInactive}`}>
+                className={`h-auto p-0 min-w-0 transition-colors ${currentLocale === "ru" ? STYLES.langActive : STYLES.langInactive}`}>
                 RU
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -116,14 +127,16 @@ export function TerminalNav({ activeTab, onTabChange }: TerminalNavProps) {
           {TABS.map((tab) => {
             const isActive = activeTab === tab;
             return (
-              <button
+              <Button
                 key={tab}
+                type="button"
+                variant="ghost"
                 onClick={() => handleTabSelect(tab)}
-                className={`w-full text-left text-sm px-4 py-2 border transition-all duration-200 ${
+                className={`w-full text-left text-sm px-4 py-2 border rounded-none h-auto ${
                   isActive ? STYLES.tabActive : STYLES.tabInactive
                 }`}>
                 {"> "} {t(tab.toLowerCase())}
-              </button>
+              </Button>
             );
           })}
         </div>
