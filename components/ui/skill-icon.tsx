@@ -19,8 +19,7 @@ export function SkillIcon({
   customImage,
   textOnly = false,
 }: Props) {
-  const iconUrl =
-    customImage || `https://skillicons.dev/icons?i=${id}&theme=dark`;
+  const iconUrl = customImage || `/api/icons?i=${id}&theme=dark`;
 
   const [hasError, setHasError] = useState(false);
   const { mode: globalMode } = useGlitch();

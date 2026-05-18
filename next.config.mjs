@@ -10,6 +10,14 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/icons",
+        destination: "https://skillicons.dev/icons",
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
