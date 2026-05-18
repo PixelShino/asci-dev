@@ -1,0 +1,17 @@
+{
+  "About": {
+    "title": "ОБО МНЕ",
+    "role": "ROLE: Fullstack-разработчик. Стек: Web apps & services.",
+    "e2e": "END-TO-END: MVP, SaaS, админ-панели. Интеграции (AMO CRM, YooKassa, Robokassa).",
+    "frontend": "FRONTEND: SPA/SSR. Сложные UI, WebGL/3D (react-three-fiber), анимации.",
+    "backend": "BACKEND: Проектирование API, схемы БД. Async workers (webhooks, рассылки, парсинг).",
+    "devops": "DEVOPS: Развертывание VPS/VDS, настройка окружения.",
+    "years_exp": "ГОДА_ОПЫТА",
+    "projects": "ПРОЕКТОВ",
+    "stack": "СТЭК"
+  },
+  "Nav": {
+    "home": "ГЛАВНАЯ",
+    "projects": "ПРОЕКТЫ"
+  }
+}

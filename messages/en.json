@@ -1,0 +1,17 @@
+{
+  "About": {
+    "title": "ABOUT ME",
+    "role": "ROLE: Fullstack developer. Scope: Web apps & services.",
+    "e2e": "END-TO-END: MVP, SaaS, admin panels. 3rd-party integrations (AMO CRM, YooKassa, Robokassa).",
+    "frontend": "FRONTEND: SPA/SSR. Complex UI, WebGL/3D integration (react-three-fiber), animations.",
+    "backend": "BACKEND: API design, DB schema. Async workers (payment webhooks, mailing, parsing).",
+    "devops": "DEVOPS: VPS/VDS provisioning, environment setup.",
+    "years_exp": "YEARS_EXP",
+    "projects": "PROJECTS",
+    "stack": "STACK"
+  },
+  "Nav": {
+    "home": "HOME",
+    "projects": "PROJECTS"
+  }
+}

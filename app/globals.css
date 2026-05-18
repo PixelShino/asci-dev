@@ -1,0 +1,155 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: #000000;
+  --foreground: #e0e0e0;
+  --card: #000000;
+  --card-foreground: #e0e0e0;
+  --popover: #000000;
+  --popover-foreground: #e0e0e0;
+  --primary: #b026ff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e0e0e0;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #b026ff;
+  --accent-foreground: #000000;
+  --destructive: #ff2626;
+  --destructive-foreground: #ffffff;
+  --border: #b026ff;
+  --input: #1a1a1a;
+  --ring: #b026ff;
+  --chart-1: #b026ff;
+  --chart-2: #8b1acc;
+  --chart-3: #6b0f99;
+  --chart-4: #d066ff;
+  --chart-5: #e099ff;
+  --radius: 0;
+  --neon-purple: #b026ff;
+  --neon-glow: 0 0 10px #b026ff, 0 0 20px #b026ff, 0 0 30px #b026ff;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #e0e0e0;
+  --card: #000000;
+  --card-foreground: #e0e0e0;
+  --popover: #000000;
+  --popover-foreground: #e0e0e0;
+  --primary: #b026ff;
+  --primary-foreground: #000000;
+  --secondary: #1a1a1a;
+  --secondary-foreground: #e0e0e0;
+  --muted: #1a1a1a;
+  --muted-foreground: #888888;
+  --accent: #b026ff;
+  --accent-foreground: #000000;
+  --destructive: #ff2626;
+  --destructive-foreground: #ffffff;
+  --border: #b026ff;
+  --input: #1a1a1a;
+  --ring: #b026ff;
+  --chart-1: #b026ff;
+  --chart-2: #8b1acc;
+  --chart-3: #6b0f99;
+  --chart-4: #d066ff;
+  --chart-5: #e099ff;
+}
+
+@theme inline {
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Blinking cursor animation */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 1s infinite;
+}
+
+/* Neon glow effect */
+.neon-glow {
+  text-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff, 0 0 20px #b026ff;
+}
+
+.neon-border-glow {
+  box-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff, inset 0 0 5px rgba(176, 38, 255, 0.3);
+}
+
+/* Dot matrix effect for navigation */
+.dot-matrix {
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+/* Scanline overlay effect */
+.scanlines::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
