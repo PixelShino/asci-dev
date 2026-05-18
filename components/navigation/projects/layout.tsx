@@ -1,98 +1,142 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { ProjectCard } from "./_components/ProjectCard";
 import { ProjectDetails } from "./_components/ProjectDetails";
 
 export type Project = {
   id: string;
-  title: string;
-  shortDesc: string;
-  fullDesc: string;
-  features: string[];
   techStack: string[];
-  images: string[];
+  imageCount: number;
   githubUrl: string;
+  featureCount: number;
+  instanceId?: string;
 };
 
 const PROJECTS: Project[] = [
   {
-    id: "rulme",
-    title: "Рули Сюда (Rulme)",
-    shortDesc: "Сервис для...",
-    fullDesc:
-      "Полноценная платформа с проксированием API запросов к бэкенду. Оптимизирована работа с базой данных.",
-    features: [
-      "Proxy API",
-      "Custom Routing",
-      "Server-side Typescript services",
-    ],
-    techStack: ["Next.js", "TypeScript", "SQL", "API", "R3F"],
-    images: ["/placeholder1.jpg", "/placeholder2.jpg"],
+    id: "t-catalog-admin",
+    techStack: ["React", "TypeScript", "Tailwind", "NestJS", "PostgreSQL"],
+    imageCount: 32,
     githubUrl: "https://github.com/...",
+    featureCount: 3,
   },
   {
-    id: "tg-mini-app",
-    title: "Telegram Mini-App",
-    shortDesc: "Web App интеграция для Telegram бота.",
-    fullDesc:
-      "Мини-апп для экосистемы Telegram. Решены проблемы с Connect Timeout Error при обращении к Telegram API.",
-    features: ["Telegram WebApps API", "Авторизация", "Адаптивный UI"],
-    techStack: ["React", "Node.js", "Telegram API", "Tailwind"],
-    images: ["/placeholder3.jpg"],
+    id: "t-catalog-client",
+    techStack: ["Next.js", "TypeScript", "Tailwind", "Redux Toolkit"],
+    imageCount: 12,
     githubUrl: "https://github.com/...",
+    featureCount: 3,
   },
   {
-    id: "admin-panel",
-    title: "Admin Panel System",
-    shortDesc: "Панель управления с защищенным доступом.",
-    fullDesc:
-      "Управление сертификатами (Certbot/SSL), мониторинг процессов (pm2) и настройка окружения.",
-    features: ["Управление SSL", "Мониторинг логов", "Supabase интеграция"],
-    techStack: ["Vue", "pm2", "Certbot", "Supabase"],
-    images: ["/placeholder4.jpg"],
+    id: "rulme-admin",
+    techStack: ["React", "TypeScript", "Node.js", "Supabase", "Tailwind"],
+    imageCount: 8,
     githubUrl: "https://github.com/...",
+    featureCount: 3,
   },
   {
-    id: "bitovki",
-    title: "Bitovki 36",
-    shortDesc: "CRM для компании",
-    fullDesc:
-      "Управление сертификатами (Certbot/SSL), мониторинг процессов (pm2) и настройка окружения.",
-    features: ["Управление SSL", "Мониторинг логов", "Supabase интеграция"],
-    techStack: ["Vue", "pm2", "Certbot", "Supabase"],
-    images: ["/placeholder4.jpg"],
+    id: "rulme-client",
+    techStack: ["Next.js", "TypeScript", "Supabase", "Tailwind", "PM2"],
+    imageCount: 2,
     githubUrl: "https://github.com/...",
+    featureCount: 19,
+  },
+  {
+    id: "bitovki36",
+    techStack: ["React", "Next.js", "TypeScript", "Nginx", "Docker"],
+    imageCount: 6,
+    githubUrl: "https://github.com/...",
+    featureCount: 3,
   },
 ];
 
+const STYLES = {
+  // ИСПРАВЛЕНО: заменили dark:bg-black на dark:bg-zinc-900/30
+  container:
+    "min-h-[calc(100vh-280px)] border border-purple-400/20 p-4 md:p-6 flex flex-col gap-4 bg-zinc-50 dark:bg-zinc-900/30 transition-colors duration-300",
+  title:
+    "text-purple-600 dark:text-purple-400 mb-4 text-base md:text-lg font-bold tracking-wider",
+  grid: "grid grid-cols-3 gap-2 md:gap-6 w-full",
+  trigger:
+    "h-12 w-full flex items-center justify-center text-xs text-zinc-400 font-mono tracking-widest uppercase select-none",
+};
+
 export function ProjectsLayout() {
+  const t = useTranslations("Projects");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [visibleProjects, setVisibleProjects] = useState<Project[]>(() =>
+    PROJECTS.map((p, i) => ({ ...p, instanceId: `${p.id}-init-${i}` })),
+  );
+
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (selectedProject) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && window.scrollY > 10) {
+          setVisibleProjects((prev) => [
+            ...prev,
+            ...PROJECTS.map((p, index) => ({
+              ...p,
+              instanceId: `${p.id}-${prev.length}-${index}`,
+            })),
+          ]);
+        }
+      },
+      { rootMargin: "0px" },
+    );
+
+    const currentTrigger = triggerRef.current;
+    if (currentTrigger) {
+      observer.observe(currentTrigger);
+    }
+
+    return () => {
+      if (currentTrigger) {
+        observer.unobserve(currentTrigger);
+      }
+      observer.disconnect();
+    };
+  }, [selectedProject]);
+
+  const handleBack = () => {
+    setSelectedProject(null);
+    setVisibleProjects(
+      PROJECTS.map((p, i) => ({ ...p, instanceId: `${p.id}-init-${i}` })),
+    );
+  };
 
   return (
-    <div className="min-h-[calc(100vh-280px)] border border-[#b026ff]/30 p-6 flex flex-col gap-4">
-      <h2 className="text-[#b026ff] mb-4">
+    <div className={STYLES.container}>
+      <h2 className={STYLES.title}>
         {">"}{" "}
         {selectedProject
-          ? `CAT ./PROJECTS/${selectedProject.id.toUpperCase()} █`
-          : "LS -LA ./PROJECTS █"}
+          ? `CAT ./PROJECTS/${selectedProject.id.toUpperCase()}`
+          : "LS -LA ./PROJECTS"}{" "}
+        <span className="cursor-blink">█</span>
       </h2>
 
       {selectedProject ? (
-        <ProjectDetails
-          project={selectedProject}
-          onBack={() => setSelectedProject(null)}
-        />
+        <ProjectDetails project={selectedProject} onBack={handleBack} />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROJECTS.map((p) => (
-            <ProjectCard
-              key={p.id}
-              project={p}
-              onClick={() => setSelectedProject(p)}
-            />
-          ))}
-        </div>
+        <>
+          <div className={STYLES.grid}>
+            {visibleProjects.map((p) => (
+              <ProjectCard
+                key={p.instanceId}
+                project={p}
+                onClick={() => setSelectedProject(p)}
+              />
+            ))}
+          </div>
+          <div ref={triggerRef} className={STYLES.trigger}>
+            {"[ MEMORY_BUFFER: STREAMING_DATA... ]"}
+          </div>
+        </>
       )}
     </div>
   );

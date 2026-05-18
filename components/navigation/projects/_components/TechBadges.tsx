@@ -4,17 +4,20 @@ interface Props {
   items: string[];
 }
 
+const STYLES = {
+  wrapper:
+    "relative w-full min-h-24 border border-dashed border-zinc-400/20 bg-white dark:bg-zinc-950/40 p-3 rounded-sm transition-colors duration-300",
+  badgeContainer: "flex flex-wrap gap-2",
+  badge:
+    "bg-purple-500/5 dark:bg-purple-400/10 text-zinc-800 dark:text-zinc-200 border border-purple-400/30 px-2 py-1 text-xs md:text-sm inline-block rounded-sm transition-colors",
+};
+
 export function TechBadges({ items }: Props) {
   return (
-    <div className="relative w-full min-h-[100px] border border-dashed border-[#888888]/30 bg-[#000000] p-2">
-      <div className="text-[10px] text-[#888888] absolute top-1 right-1">
-      </div>
-
-      <div className="flex flex-wrap gap-2 mt-4">
+    <div className={STYLES.wrapper}>
+      <div className={STYLES.badgeContainer}>
         {items.map((tech) => (
-          <span
-            key={tech}
-            className="bg-[#b026ff]/10 text-[#e0e0e0] border border-[#b026ff]/50 px-2 py-1 text-sm inline-block">
+          <span key={tech} className={STYLES.badge}>
             {tech}
           </span>
         ))}

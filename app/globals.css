@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -61,8 +61,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  /* --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback'; */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -112,8 +112,14 @@
 
 /* Blinking cursor animation */
 @keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .cursor-blink {
@@ -122,11 +128,17 @@
 
 /* Neon glow effect */
 .neon-glow {
-  text-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff, 0 0 20px #b026ff;
+  text-shadow:
+    0 0 5px #b026ff,
+    0 0 10px #b026ff,
+    0 0 20px #b026ff;
 }
 
 .neon-border-glow {
-  box-shadow: 0 0 5px #b026ff, 0 0 10px #b026ff, inset 0 0 5px rgba(176, 38, 255, 0.3);
+  box-shadow:
+    0 0 5px #b026ff,
+    0 0 10px #b026ff,
+    inset 0 0 5px rgba(176, 38, 255, 0.3);
 }
 
 /* Dot matrix effect for navigation */
@@ -137,7 +149,7 @@
 
 /* Scanline overlay effect */
 .scanlines::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;

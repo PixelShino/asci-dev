@@ -1,4 +1,4 @@
-import PortfolioClient from "@/components/portfolio-client";
+import PortfolioClient from "@/components/tabs";
 import { setRequestLocale } from "next-intl/server";
 
 interface Props {

@@ -1,17 +1,126 @@
 {
   "About": {
-    "title": "ABOUT ME",
-    "role": "ROLE: Fullstack developer. Scope: Web apps & services.",
-    "e2e": "END-TO-END: MVP, SaaS, admin panels. 3rd-party integrations (AMO CRM, YooKassa, Robokassa).",
-    "frontend": "FRONTEND: SPA/SSR. Complex UI, WebGL/3D integration (react-three-fiber), animations.",
-    "backend": "BACKEND: API design, DB schema. Async workers (payment webhooks, mailing, parsing).",
-    "devops": "DEVOPS: VPS/VDS provisioning, environment setup.",
+    "title": "EXPERIENCE",
+    "role": "ROLE: Fullstack Developer. Stack: React / Next.js / TypeScript / Node.js.",
+    "e2e": "END-TO-END: High-performance SaaS, MVP, and business logic development. Integrations: AmoCRM, YooKassa, Robokassa.",
+    "frontend": "FRONTEND: SPA/SSR architecture. Advanced UI/UX systems, custom animations, and WebGL/3D (React Three Fiber).",
+    "backend": "BACKEND: Relational & NoSQL database schema design. Async process optimization (workers, webhooks, data parsing).",
+    "infrastructure": "INFRASTRUCTURE: Containerization (Docker), web servers (Nginx), process management (PM2), and SSL certification.",
     "years_exp": "YEARS_EXP",
     "projects": "PROJECTS",
-    "stack": "STACK"
+    "stack": "STACK",
+    "contact": "CONTACT"
   },
   "Nav": {
     "home": "HOME",
-    "projects": "PROJECTS"
+    "about": "ABOUT",
+    "projects": "PROJECTS",
+    "contact": "CONTACT",
+    "open_menu": "< MENU >",
+    "close_menu": "> MENU <",
+    "loading": "[ LOADING... ]",
+    "light_mode": "[ LIGHT_MODE ]",
+    "dark_mode": "[ DARK_MODE ]"
+  },
+  "Contact": {
+    "title": "SEND AN INVITATION",
+    "name": "INPUT_NAME*",
+    "phone": "INPUT_PHONE (OPTIONAL)",
+    "email": "INPUT_EMAIL*",
+    "comment": "INPUT_COMMENT*",
+    "sending": "TRANSMITTING_PACKETS...",
+    "send": "SEND_DATA",
+    "success_status": "STATUS: 200 OK",
+    "success_msg": "[SUCCESS]: Packets successfully transmitted to recipient.",
+    "success_sub": "// A copy of the broadcast has been sent to your Email address.",
+    "send_again": "SEND ANOTHER PACKET",
+    "sys_error": "SYS_ERROR"
+  },
+  "About-tab": {
+    "title": "CAT SYSTEM_CORE_PROFILE.MD --VERBOSE",
+    "section_overview": "01 // DEVELOPMENT EXPERIENCE",
+    "overview_text": "3.5 years of commercial development experience. Specializing in scalable Fullstack applications (SSR/SPA) and integration layers. Core focus: fault-tolerant server architecture, end-to-end API integrations, database management, and CI/CD pipeline automation.",
+
+    "section_workflow": "02 // WORKFLOW & LEGACY CODE APPROACH",
+    "workflow_text_1": "► Data-Driven Design: Analyze business logic and map out entity-relationship (ER) diagrams before writing code. Prioritize strict typing and service-oriented separation of concerns.",
+    "workflow_text_2": "► Legacy & Bug Tracking: Preventative approach to legacy code — write test coverage prior to refactoring, isolate outdated modules using patterns, and patch issues via rigorous checklist routines.",
+
+    "section_ai": "03 // AI ASSISTANCE & INTEGRATION",
+    "ai_text_1": "► Routine Optimization: Leverage AI (Gemini, Cursor) as a smart co-processor for bootstrapping boilerplate, dynamic UI generation, initial migrations, and unit tests, saving up to 40% of setup time.",
+    "ai_text_2": "► Quality Assurance: Utilize AI for heavy log parsing and anomaly detection. Architectural review, security auditing, and complex SQL query optimization remain strictly manual tasks.",
+
+    "section_hobby": "04 // HOMELAB & HOME AUTOMATION",
+    "hobby_text_1": "► Network Infrastructure: Architect and manage custom local network environments. Deploy dedicated routing gateways and secure VPN tunnels to maintain seamless access and eliminate environment conflicts.",
+    "hobby_text_2": "► Self-Hosted Ecosystems: Maintain local media servers (Jellyfin) and cloud microservices packed into Docker environments. Automate automated data backups, lifecycle management, and storage arrays."
+  },
+  "Footer": {
+    "connect": "CONNECT",
+    "status": "SYSTEM ACTIVE",
+    "thanks_msg": "Thanks for visiting"
+  },
+  "Skills": {
+    "title": "SYSTEM_SKILLS █",
+    "frontend": "FRONT-END",
+    "backend": "BACK-END",
+    "tools": "TOOLS"
+  },
+  "Projects": {
+    "features_label": "FEATURES:",
+    "stack_label": "TECH_STACK:",
+    "t-catalog-admin": {
+      "title": "T-Catalog — Admin Panel",
+      "shortDesc": "Internal ERP/CRM management dashboard for administrators.",
+      "fullDesc": "A secure portal for content orchestrating, data moderation, and event analysis. Features advanced data grid processing, role-based controls, and custom analytics graphs.",
+      "features": {
+        "0": "Role-Based Access Control (RBAC)",
+        "1": "High-performance CRUD routines",
+        "2": "Automated data exporting & logging"
+      }
+    },
+    "t-catalog-client": {
+      "title": "T-Catalog — Client Application",
+      "shortDesc": "High-performance storefront client application.",
+      "fullDesc": "Public-facing digital catalog with comprehensive SEO optimizations and server-side rendering pipelines. Configured with dynamic faceted search and localized routing.",
+      "features": {
+        "0": "Server-Side Rendering (SSR)",
+        "1": "Core Web Vitals performance scaling",
+        "2": "Payment provider system integrations"
+      }
+    },
+    "rulme-admin": {
+      "title": "Rulme — Operator Dashboard",
+      "shortDesc": "Administrative back-office console for booking dispatchers.",
+      "fullDesc": "Dispatch management interface for supervising an on-demand automotive services marketplace. Enables real-time chat monitoring, master registration vetting, and financial verification.",
+      "features": {
+        "0": "Live order dispatch pipelines",
+        "1": "Transaction auditing interfaces",
+        "2": "Core business metrics analysis layout"
+      }
+    },
+    "rulme-client": {
+      "title": "Rulme — Customer Ecosystem",
+      "shortDesc": "Telegram Mini App for on-demand automotive technician search.",
+      "fullDesc": "An interactive digital product serving car owners seeking technical help. Features concurrent real-time chat spaces via Supabase, unified userId transitions, and custom anonymous onboarding pipelines.",
+      "features": {
+        "0": "Supabase Realtime messaging",
+        "1": "Custom Guest Registration flow",
+        "2": "Strict separation of welcome and referral triggers"
+      }
+    },
+    "bitovki36": {
+      "title": "Bitovki 36 CRM",
+      "shortDesc": "Corporate operational dashboard for industrial logistics.",
+      "fullDesc": "Tailored enterprise engine focused on supply chain execution, tracking inventory values, and unifying production documentation logs.",
+      "features": {
+        "0": "Inventory management pipelines",
+        "1": "Automated contract & invoice generation",
+        "2": "Process supervision via PM2 triggers"
+      }
+    }
+  },
+  "MediaViewer": {
+    "header_title": "Media Assets ({count})",
+    "type_video": "Video",
+    "btn_back": "Back"
   }
 }
