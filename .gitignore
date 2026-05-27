@@ -44,3 +44,18 @@ pnpm-debug.log*
 # Testing cache
 /coverage/
 .eslintcache
+
+# TypeScript / Next.js generated
+*.tsbuildinfo
+next-env.d.ts
+
+# Vercel
+.vercel
+
+# Prisma / Payload (генерируемые артефакты и локальные загрузки)
+# (миграции и payload-types.ts коммитим; локальное хранилище медиа — нет)
+/public/media/
+
+# Локальная рабочая документация (не в публичный репозиторий)
+/docs/
+/CLAUDE.md

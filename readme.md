@@ -20,7 +20,7 @@
 ### Backend & Infrastructure
 
 - **Рантайм среда:** Node.js, Next.js Route Handlers
-- **Телеметрия:** `@vercel/analytics/next` (real-time мониторинг показателей производительности Core Web Vitals и посещаемости )
+- **Телеметрия:** `@vercel/analytics/next` (real-time мониторинг Core Web Vitals и посещаемости)
 - **Хостинг:** Vercel
 
 ---
@@ -30,31 +30,26 @@
 ### Клонирование репозитория и установка зависимостей:
 
 ```bash
-git clone [https://github.com/PixelShino/asci-dev.git](https://github.com/PixelShino/asci-dev.git)
+git clone https://github.com/PixelShino/asci-dev.git
 cd asci-dev
-npm install
+pnpm install
 ```
 
 ### Настройка переменных окружения (`.env.local`):
 
-Создайте файл `.env.local` в корне проекта и укажите следующие ключи:
+Скопируйте шаблон и заполните значения — полный список ключей с комментариями
+лежит в [`.env.example`](./.env.example):
 
-```env
-# API ключи для ИИ-сопроцессора
-GEMINI_API_KEY="google_ai_studio_api_key"
-OPENROUTER_API_KEY="openrouter_api_key"
-
-# Конфигурация SMTP (Nodemailer) для формы обратной связи
-SMTP_HOST="smtp.mail.ru"
-SMTP_PORT=465
-SMTP_USER="email@mail.ru"
-SMTP_PASS="pass"
+```bash
+cp .env.example .env.local
 ```
+
+Каждый ключ снабжён комментарием — что это и где взять.
 
 ### Запуск сервера разработки:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Приложение будет доступно по адресу `http://localhost:3000`.
