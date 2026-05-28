@@ -52,6 +52,9 @@ next-env.d.ts
 # Vercel
 .vercel
 
+# Playwright (артефакты MCP-проверок: скриншоты, снапшоты, логи)
+.playwright-mcp/
+
 # Prisma / Payload (генерируемые артефакты и локальные загрузки)
 # (миграции и payload-types.ts коммитим; локальное хранилище медиа — нет)
 /public/media/

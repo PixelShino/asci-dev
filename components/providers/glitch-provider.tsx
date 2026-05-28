@@ -11,6 +11,7 @@ import {
 export type GlitchMode = "normal" | "glitch" | "ascii";
 
 interface GlitchContextType {
+  /** Текущий режим эффекта, потребляется иконками стека (skill-icon). */
   mode: GlitchMode;
 }
 
@@ -23,18 +24,21 @@ export function useGlitch() {
 export function GlitchProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<GlitchMode>("normal");
 
+  // Авто-цикл normal → glitch → ascii → glitch → normal. Вложенные таймеры
+  // чистим, чтобы не оставлять висящие setTimeout при размонтировании.
   useEffect(() => {
-    const glitchInterval = setInterval(() => {
+    const timeouts: ReturnType<typeof setTimeout>[] = [];
+    const interval = setInterval(() => {
       setMode("glitch");
-
-      setTimeout(() => setMode("ascii"), 300);
-
-      setTimeout(() => setMode("glitch"), 3000);
-
-      setTimeout(() => setMode("normal"), 3300);
+      timeouts.push(setTimeout(() => setMode("ascii"), 300));
+      timeouts.push(setTimeout(() => setMode("glitch"), 3000));
+      timeouts.push(setTimeout(() => setMode("normal"), 3300));
     }, 8000);
 
-    return () => clearInterval(glitchInterval);
+    return () => {
+      clearInterval(interval);
+      timeouts.forEach(clearTimeout);
+    };
   }, []);
 
   return (

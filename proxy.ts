@@ -13,6 +13,9 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|glb|gltf)$).*)",
+    // Локализуем все маршруты, КРОМЕ служебных и любых файлов с расширением
+    // (статика: .ico, .png, .webmanifest, .glb, .xml, ... — точка в пути).
+    // Прежний allowlist расширений пропускал .webmanifest и .ico → давал 404.
+    "/((?!api|_next|_vercel|.*\\..*).*)",
   ],
 };

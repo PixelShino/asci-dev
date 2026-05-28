@@ -4,9 +4,8 @@ const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // Проверка типов при сборке включена: `tsc --noEmit` сейчас чист (0 ошибок).
+  // Если Payload-генерация типов начнёт ломать билд — вернуть `typescript.ignoreBuildErrors`.
   images: {
     unoptimized: true,
   },

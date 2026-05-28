@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TerminalNav } from "@/components/terminalNav";
-import { AsciModelViewer } from "@/components/navigation/home/modelViewer";
+import { AsciiAnim } from "@/components/navigation/home/asciiAnim";
 import { AboutSection } from "@/components/navigation/home/aboutSection";
 import { SkillsGrid } from "@/components/navigation/home/skillsGrid";
 import { SocialFooter } from "@/components/socialFooter";
@@ -53,8 +53,10 @@ export default function PortfolioClient() {
       <main className="max-w-7xl mx-auto p-6 relative z-10">
         <div className={activeTab === "HOME" ? "block" : "hidden"}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-[calc(100vh-280px)] animate-fadeIn items-stretch relative">
-            <div className="lg:col-span-5 h-full w-full">
-              <AsciModelViewer />
+            <div className="lg:col-span-5 w-full">
+              <div className="lg:sticky lg:top-24">
+                <AsciiAnim />
+              </div>
             </div>
 
             <div className="lg:col-span-7 flex flex-col gap-8 w-full">

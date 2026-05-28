@@ -165,3 +165,103 @@
   pointer-events: none;
   z-index: 10;
 }
+
+/* Glitch-эффект на CSS — заменяет нестабильную WebGL-постобработку.
+   Вешается на обёртку 3D-модели (.glitch-active) в glitch-режиме:
+   дрожание + RGB-сдвиг через псевдоэлементы поверх канваса. */
+@keyframes glitch-jitter {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-2px, 1px);
+  }
+  40% {
+    transform: translate(2px, -1px);
+  }
+  60% {
+    transform: translate(-1px, -1px);
+  }
+  80% {
+    transform: translate(1px, 1px);
+  }
+}
+
+@keyframes glitch-slice {
+  0%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+  25% {
+    clip-path: inset(12% 0 58% 0);
+  }
+  50% {
+    clip-path: inset(48% 0 22% 0);
+  }
+  75% {
+    clip-path: inset(30% 0 42% 0);
+  }
+}
+
+.glitch-active {
+  animation: glitch-jitter 0.28s steps(2, end) infinite;
+}
+
+.glitch-active::before,
+.glitch-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: glitch-slice 0.26s steps(2, end) infinite;
+}
+
+.glitch-active::before {
+  background: rgba(255, 0, 96, 0.14);
+  transform: translateX(-3px);
+}
+
+.glitch-active::after {
+  background: rgba(0, 209, 255, 0.14);
+  transform: translateX(3px);
+  animation-direction: reverse;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-active,
+  .glitch-active::before,
+  .glitch-active::after {
+    animation: none;
+  }
+}
+
+/* Лёгкое дрожание для букв «PIXELSHINO» рядом с ASCII-анимацией.
+   Сдвиги в десятых пикселя — заметно живёт, но не отвлекает от анимации. */
+@keyframes pixel-jitter {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-0.6px, 0.4px);
+  }
+  50% {
+    transform: translate(0.5px, -0.5px);
+  }
+  75% {
+    transform: translate(-0.3px, -0.4px);
+  }
+}
+
+.pixel-jitter {
+  animation: pixel-jitter 0.32s steps(2, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pixel-jitter {
+    animation: none;
+  }
+}
