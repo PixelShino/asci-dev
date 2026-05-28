@@ -1,28 +1,127 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import {
   PIXELSHINO_LETTERS,
+  LETTER_ROWS,
+  LETTER_COLS,
+  GAP_ROWS,
+  NOISE_CHARS,
   LETTER_STAGGER_MS,
-  GLITCH_INTERVAL_MS,
+  NOISE_TICK_MS,
 } from "./pixelshinoFrames";
 
-const TOTAL = PIXELSHINO_LETTERS.length;
-const LETTER_ROWS = 5;
-const GAP_ROWS_EQUIV = 1.2; // визуальный gap между буквами в эквиваленте строк
-const TOTAL_ROWS = TOTAL * LETTER_ROWS + (TOTAL - 1) * GAP_ROWS_EQUIV;
-const MIN_FONT = 6;
-const MAX_FONT = 22;
+const TOTAL_LETTERS = PIXELSHINO_LETTERS.length;
+const TOTAL_LETTER_ROWS =
+  TOTAL_LETTERS * LETTER_ROWS + (TOTAL_LETTERS - 1) * GAP_ROWS;
+const CHAR_WIDTH_RATIO = 0.62;
+const MIN_FONT = 5;
+const MAX_FONT = 28;
+const STATIC_SEED = 1;
+const HALO_RADIUS = 1;
+// Палитра «handwritten ASCII» — символы для отрисовки букв; меняются каждый тик.
+const LETTER_GLYPHS = "#@*%&";
 
-// SSR-safe — useEffect для серверного prerender, useLayoutEffect — для клиента.
+type Geometry = { fontSize: number; cols: number; rows: number };
+type Kind = "letter" | "halo" | "noise";
+type Cell = { ch: string; kind: Kind };
+
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+function mulberry32(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function isLetterPixelAt(
+  r: number,
+  c: number,
+  padTop: number,
+  padLeft: number,
+  visibleLetters: number,
+): boolean {
+  const localR = r - padTop;
+  const localC = c - padLeft;
+  if (localC < 0 || localC >= LETTER_COLS) return false;
+  if (localR < 0 || localR >= TOTAL_LETTER_ROWS) return false;
+  const blockH = LETTER_ROWS + GAP_ROWS;
+  const letterIdx = Math.floor(localR / blockH);
+  if (letterIdx >= TOTAL_LETTERS) return false;
+  if (letterIdx >= visibleLetters) return false;
+  const innerR = localR - letterIdx * blockH;
+  if (innerR >= LETTER_ROWS) return false;
+  return PIXELSHINO_LETTERS[letterIdx][innerR][localC] === "█";
+}
+
+function buildFrame(
+  seed: number,
+  visibleLetters: number,
+  geom: Geometry,
+): Cell[][] {
+  const rng = mulberry32(seed);
+  const padTop = Math.max(0, Math.floor((geom.rows - TOTAL_LETTER_ROWS) / 2));
+  const padLeft = Math.max(0, Math.floor((geom.cols - LETTER_COLS) / 2));
+
+  const isLetter = (r: number, c: number) =>
+    isLetterPixelAt(r, c, padTop, padLeft, visibleLetters);
+
+  const grid: Cell[][] = [];
+  for (let r = 0; r < geom.rows; r++) {
+    const row: Cell[] = [];
+    for (let c = 0; c < geom.cols; c++) {
+      if (isLetter(r, c)) {
+        row.push({
+          ch: LETTER_GLYPHS[Math.floor(rng() * LETTER_GLYPHS.length)],
+          kind: "letter",
+        });
+        continue;
+      }
+      // halo: ячейка не-буква, но в радиусе HALO есть буква.
+      let inHalo = false;
+      for (let dr = -HALO_RADIUS; dr <= HALO_RADIUS && !inHalo; dr++) {
+        for (let dc = -HALO_RADIUS; dc <= HALO_RADIUS && !inHalo; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          if (isLetter(r + dr, c + dc)) inHalo = true;
+        }
+      }
+      const ch = NOISE_CHARS[Math.floor(rng() * NOISE_CHARS.length)];
+      row.push({ ch, kind: inHalo ? "halo" : "noise" });
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+const KIND_CLASS: Record<Kind, string> = {
+  letter:
+    "text-purple-200 dark:text-purple-100 font-bold drop-shadow-[0_0_4px_rgba(176,38,255,0.85)]",
+  halo: "text-zinc-500/25 dark:text-zinc-400/20",
+  noise: "text-purple-500/70 dark:text-purple-400/75",
+};
+
 export function AsciiAnim() {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [fontSize, setFontSize] = useState<number>(12);
+  const [geom, setGeom] = useState<Geometry>({
+    fontSize: 12,
+    cols: LETTER_COLS,
+    rows: TOTAL_LETTER_ROWS,
+  });
+  const [seed, setSeed] = useState<number>(STATIC_SEED);
   const [visible, setVisible] = useState(0);
-  const [glitchIdx, setGlitchIdx] = useState<number | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -35,60 +134,65 @@ export function AsciiAnim() {
     return () => mql.removeEventListener("change", onChange);
   }, []);
 
-  // Автофит: считаем font-size так, чтобы все буквы влезли в высоту контейнера.
   useIsomorphicLayoutEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-
     const recalc = () => {
       const h = el.clientHeight;
-      if (h <= 0) return;
-      // leading == 1, поэтому высота 1 строки ≈ font-size.
-      const target = Math.floor(h / TOTAL_ROWS);
-      setFontSize(Math.max(MIN_FONT, Math.min(MAX_FONT, target)));
+      const w = el.clientWidth;
+      if (h <= 0 || w <= 0) return;
+      const byHeight = h / TOTAL_LETTER_ROWS;
+      const byWidth = w / (LETTER_COLS * CHAR_WIDTH_RATIO);
+      const targetFont = Math.floor(Math.min(byHeight, byWidth));
+      const fontSize = Math.max(MIN_FONT, Math.min(MAX_FONT, targetFont));
+      const cols = Math.max(
+        LETTER_COLS,
+        Math.floor(w / (fontSize * CHAR_WIDTH_RATIO)),
+      );
+      const rows = Math.max(TOTAL_LETTER_ROWS, Math.floor(h / fontSize));
+      setGeom({ fontSize, cols, rows });
     };
-
     recalc();
     const ro = new ResizeObserver(recalc);
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
 
-  // Stagger-печать букв при монтировании.
   useEffect(() => {
     if (!mounted) return;
     if (reducedMotion) {
-      setVisible(TOTAL);
+      setVisible(TOTAL_LETTERS);
       return;
     }
     setVisible(0);
     const timers: ReturnType<typeof setTimeout>[] = [];
-    for (let i = 1; i <= TOTAL; i++) {
+    for (let i = 1; i <= TOTAL_LETTERS; i++) {
       timers.push(setTimeout(() => setVisible(i), i * LETTER_STAGGER_MS));
     }
     return () => timers.forEach(clearTimeout);
   }, [mounted, reducedMotion]);
 
-  // Случайная буква мигает «глитчем» раз в GLITCH_INTERVAL_MS.
   useEffect(() => {
     if (!mounted || reducedMotion) return;
-    let offTimer: ReturnType<typeof setTimeout> | undefined;
-    const id = setInterval(() => {
-      const next = Math.floor(Math.random() * TOTAL);
-      setGlitchIdx(next);
-      offTimer = setTimeout(() => setGlitchIdx(null), 140);
-    }, GLITCH_INTERVAL_MS);
-    return () => {
-      clearInterval(id);
-      if (offTimer) clearTimeout(offTimer);
-    };
+    const id = setInterval(() => setSeed((s) => (s + 1) >>> 0), NOISE_TICK_MS);
+    return () => clearInterval(id);
   }, [mounted, reducedMotion]);
+
+  const grid = useMemo(
+    () =>
+      buildFrame(
+        reducedMotion ? STATIC_SEED : seed,
+        reducedMotion ? TOTAL_LETTERS : visible,
+        geom,
+      ),
+    [seed, visible, reducedMotion, geom],
+  );
 
   const gridColor = "rgba(168, 85, 247, 0.05)";
 
   return (
     <div
-      className="relative h-80 sm:h-96 lg:h-[calc(100vh-220px)] lg:max-h-[680px] w-full font-mono overflow-hidden"
+      className="relative h-full w-full font-mono overflow-hidden"
       role="img"
       aria-label="PIXELSHINO">
       <div
@@ -115,30 +219,22 @@ export function AsciiAnim() {
 
         <div
           ref={containerRef}
-          className="absolute inset-x-0 top-4 bottom-10 flex flex-col items-center justify-center gap-[0.6em] pixel-jitter z-10"
-          style={{ fontSize: `${fontSize}px`, lineHeight: 1 }}
+          className="absolute inset-x-0 top-4 bottom-10 flex items-center justify-center pixel-jitter z-10"
           aria-hidden="true">
-          {PIXELSHINO_LETTERS.map((letter, i) => {
-            const shown = i < visible;
-            const isGlitching = glitchIdx === i;
-            return (
-              <pre
-                key={i}
-                className={`m-0 p-0 whitespace-pre select-none text-purple-600 dark:text-purple-400 drop-shadow-[0_0_6px_rgba(168,85,247,0.35)] transition-opacity duration-150 ${
-                  shown ? (isGlitching ? "opacity-40" : "opacity-100") : "opacity-0"
-                }`}
-                style={
-                  isGlitching
-                    ? {
-                        textShadow:
-                          "2px 0 0 rgba(255,0,96,0.7), -2px 0 0 rgba(0,209,255,0.7)",
-                      }
-                    : undefined
-                }>
-                {letter}
-              </pre>
-            );
-          })}
+          <pre
+            className="m-0 p-0 whitespace-pre select-none"
+            style={{ fontSize: `${geom.fontSize}px`, lineHeight: 1 }}>
+            {grid.map((row, r) => (
+              <Fragment key={r}>
+                {r > 0 && "\n"}
+                {row.map((cell, c) => (
+                  <span key={c} className={KIND_CLASS[cell.kind]}>
+                    {cell.ch}
+                  </span>
+                ))}
+              </Fragment>
+            ))}
+          </pre>
         </div>
       </div>
 

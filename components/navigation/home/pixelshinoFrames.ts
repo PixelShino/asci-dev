@@ -70,13 +70,23 @@ const LETTERS: Record<string, string[]> = {
 
 const WORD = "PIXELSHINO";
 
-/** Массив букв (каждая — 5 строк через `\n`). Между буквами — пустая строка. */
-export const PIXELSHINO_LETTERS: readonly string[] = WORD.split("").map((ch) =>
-  LETTERS[ch].join("\n"),
+/** Каждая буква — массив из 5 строк (каждая 5 символов). */
+export const PIXELSHINO_LETTERS: readonly string[][] = WORD.split("").map(
+  (ch) => LETTERS[ch],
 );
 
-/** Длительность появления одной буквы в мс (для stagger при монтировании). */
-export const LETTER_STAGGER_MS = 110;
+/** Высота/ширина одной буквы в символах. */
+export const LETTER_ROWS = 5;
+export const LETTER_COLS = 5;
 
-/** Период случайного глитч-кадра в мс (одна буква мигает). */
-export const GLITCH_INTERVAL_MS = 2600;
+/** Пустых строк между буквами (gap, заполняется шумом). */
+export const GAP_ROWS = 1;
+
+/** Палитра символов «шума» (как фон Porky-кадров на ASCII art). */
+export const NOISE_CHARS = "t1i:;.,-";
+
+/** Длительность появления одной буквы при монтировании (мс). */
+export const LETTER_STAGGER_MS = 140;
+
+/** Шаг обновления шумового фона (мс). */
+export const NOISE_TICK_MS = 180;
