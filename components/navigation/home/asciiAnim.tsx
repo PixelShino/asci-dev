@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Fragment,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   PIXELSHINO_LETTERS,
   LETTER_ROWS,
@@ -26,12 +19,12 @@ const MIN_FONT = 7;
 const MAX_FONT = 28;
 const STATIC_SEED = 1;
 const HALO_RADIUS = 1;
-// Палитра «handwritten ASCII» — символы для отрисовки букв; меняются каждый тик.
 const LETTER_GLYPHS = "#@*%&";
 
 type Geometry = { fontSize: number; cols: number; rows: number };
-type Kind = "letter" | "halo" | "noise";
-type Cell = { ch: string; kind: Kind };
+type Layers = { noise: string; halo: string; letter: string };
+
+const EMPTY_LAYERS: Layers = { noise: "", halo: "", letter: "" };
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -67,11 +60,16 @@ function isLetterPixelAt(
   return PIXELSHINO_LETTERS[letterIdx][innerR][localC] === "█";
 }
 
-function buildFrame(
+/**
+ * Возвращает 3 слоя отдельными строками: noise / halo / letter.
+ * Это позволяет рендерить три простых `<pre>` вместо тысяч `<span>` с
+ * разными классами. React диффит 3 текста на тик, не 3000 элементов.
+ */
+function buildLayers(
   seed: number,
   visibleLetters: number,
   geom: Geometry,
-): Cell[][] {
+): Layers {
   const rng = mulberry32(seed);
   const padTop = Math.max(0, Math.floor((geom.rows - TOTAL_LETTER_ROWS) / 2));
   const padLeft = Math.max(0, Math.floor((geom.cols - LETTER_COLS) / 2));
@@ -79,18 +77,21 @@ function buildFrame(
   const isLetter = (r: number, c: number) =>
     isLetterPixelAt(r, c, padTop, padLeft, visibleLetters);
 
-  const grid: Cell[][] = [];
+  const noise: string[] = [];
+  const halo: string[] = [];
+  const letter: string[] = [];
+
   for (let r = 0; r < geom.rows; r++) {
-    const row: Cell[] = [];
+    let nLine = "";
+    let hLine = "";
+    let lLine = "";
     for (let c = 0; c < geom.cols; c++) {
       if (isLetter(r, c)) {
-        row.push({
-          ch: LETTER_GLYPHS[Math.floor(rng() * LETTER_GLYPHS.length)],
-          kind: "letter",
-        });
+        lLine += LETTER_GLYPHS[Math.floor(rng() * LETTER_GLYPHS.length)];
+        nLine += " ";
+        hLine += " ";
         continue;
       }
-      // halo: ячейка не-буква, но в радиусе HALO есть буква.
       let inHalo = false;
       for (let dr = -HALO_RADIUS; dr <= HALO_RADIUS && !inHalo; dr++) {
         for (let dc = -HALO_RADIUS; dc <= HALO_RADIUS && !inHalo; dc++) {
@@ -99,21 +100,30 @@ function buildFrame(
         }
       }
       const ch = NOISE_CHARS[Math.floor(rng() * NOISE_CHARS.length)];
-      row.push({ ch, kind: inHalo ? "halo" : "noise" });
+      if (inHalo) {
+        hLine += ch;
+        nLine += " ";
+      } else {
+        nLine += ch;
+        hLine += " ";
+      }
+      lLine += " ";
     }
-    grid.push(row);
+    noise.push(nLine);
+    halo.push(hLine);
+    letter.push(lLine);
   }
-  return grid;
+  return {
+    noise: noise.join("\n"),
+    halo: halo.join("\n"),
+    letter: letter.join("\n"),
+  };
 }
 
-// Контраст по яркости: буквы — против фона (светлые на тёмной теме, тёмные
-// на светлой). Не чисто-белый — приглушённый zinc-200, чтобы не «маркетингово»
-// светилось. Шум остаётся фосфорным фиолетовым, halo подкрашивает периметр.
-const KIND_CLASS: Record<Kind, string> = {
-  letter: "text-zinc-800 dark:text-zinc-200 font-bold",
-  halo: "text-purple-500/40 dark:text-purple-300/40",
-  noise: "text-purple-500/80 dark:text-purple-400",
-};
+const LAYER_BASE = "absolute inset-0 m-0 p-0 whitespace-pre select-none";
+const NOISE_CLASS = "text-purple-500/80 dark:text-purple-400";
+const HALO_CLASS = "text-purple-500/40 dark:text-purple-300/40";
+const LETTER_CLASS = "text-zinc-800 dark:text-zinc-200 font-bold";
 
 export function AsciiAnim() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -158,8 +168,6 @@ export function AsciiAnim() {
     recalc();
     const ro = new ResizeObserver(recalc);
     ro.observe(el);
-    // IntersectionObserver: пересчёт при возврате видимости + пауза тика шума,
-    // когда виьвер скрыт (другая вкладка) — экономим React-ре-рендеры.
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries.some((e) => e.isIntersecting);
@@ -195,17 +203,20 @@ export function AsciiAnim() {
     return () => clearInterval(id);
   }, [mounted, reducedMotion, isVisible]);
 
-  const grid = useMemo(
+  const layers = useMemo(
     () =>
-      buildFrame(
-        reducedMotion ? STATIC_SEED : seed,
-        reducedMotion ? TOTAL_LETTERS : visible,
-        geom,
-      ),
-    [seed, visible, reducedMotion, geom],
+      isVisible
+        ? buildLayers(
+            reducedMotion ? STATIC_SEED : seed,
+            reducedMotion ? TOTAL_LETTERS : visible,
+            geom,
+          )
+        : EMPTY_LAYERS,
+    [seed, visible, reducedMotion, geom, isVisible],
   );
 
   const gridColor = "rgba(168, 85, 247, 0.05)";
+  const preStyle = { fontSize: `${geom.fontSize}px`, lineHeight: 1 };
 
   return (
     <div
@@ -236,26 +247,26 @@ export function AsciiAnim() {
 
         <div
           ref={containerRef}
-          className="absolute inset-x-0 top-4 bottom-10 flex items-center justify-center pixel-jitter z-10"
+          className="absolute inset-x-0 top-4 bottom-10 pixel-jitter z-10"
           aria-hidden="true">
-          <pre
-            className="m-0 p-0 whitespace-pre select-none"
-            style={{
-              fontSize: `${geom.fontSize}px`,
-              lineHeight: 1,
-              textShadow: "0 0 6px rgba(176, 38, 255, 0.18)",
-            }}>
-            {grid.map((row, r) => (
-              <Fragment key={r}>
-                {r > 0 && "\n"}
-                {row.map((cell, c) => (
-                  <span key={c} className={KIND_CLASS[cell.kind]}>
-                    {cell.ch}
-                  </span>
-                ))}
-              </Fragment>
-            ))}
-          </pre>
+          <div className="relative w-full h-full flex items-center justify-center">
+            <div
+              className="relative"
+              style={{
+                width: `${geom.cols * geom.fontSize * CHAR_WIDTH_RATIO}px`,
+                height: `${geom.rows * geom.fontSize}px`,
+              }}>
+              <pre className={`${LAYER_BASE} ${NOISE_CLASS}`} style={preStyle}>
+                {layers.noise}
+              </pre>
+              <pre className={`${LAYER_BASE} ${HALO_CLASS}`} style={preStyle}>
+                {layers.halo}
+              </pre>
+              <pre className={`${LAYER_BASE} ${LETTER_CLASS}`} style={preStyle}>
+                {layers.letter}
+              </pre>
+            </div>
+          </div>
         </div>
       </div>
 
