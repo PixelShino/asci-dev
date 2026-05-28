@@ -3,65 +3,105 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+type Status = "IDLE" | "LOADING" | "SUCCESS" | "ERROR";
+
 const STYLES = {
   cardLeft:
     "lg:col-span-2 space-y-6 border border-purple-400/20 bg-zinc-100/50 dark:bg-zinc-900/30 p-5 backdrop-blur-sm transition-colors duration-300",
   contactGroup:
-    "border-l-2 border-purple-400/30 pl-3 py-1 hover:border-purple-500 dark:hover:border-purple-400 transition-colors group",
+    "border-l border-purple-400/30 pl-3 py-1 hover:border-purple-500 dark:hover:border-purple-400 transition-colors group",
   contactLabel: "block text-xs text-zinc-400 dark:text-zinc-500 select-none",
   contactLink:
     "text-zinc-800 dark:text-zinc-200 hover:text-purple-500 dark:hover:text-purple-400 transition-all block mt-1 font-bold",
-
   inputLabel:
     "block text-xs font-bold text-zinc-500 dark:text-zinc-400 mb-1 select-none",
   inputField:
     "w-full bg-white dark:bg-zinc-950/60 border border-purple-400/30 p-2 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-purple-500 dark:focus:border-purple-400 text-sm transition-all rounded-sm",
-
+  inputFieldError:
+    "border-red-500/70 dark:border-red-500/70 focus:border-red-500 dark:focus:border-red-500",
+  errorText:
+    "text-[11px] text-red-600 dark:text-red-400 mt-1 font-mono select-none",
   btnSubmit:
     "border border-purple-500 dark:border-purple-400 text-purple-600 dark:text-purple-400 px-5 py-2 hover:bg-purple-500/5 dark:hover:bg-purple-400/10 disabled:opacity-40 transition-all text-sm font-semibold tracking-wider uppercase",
   btnMail:
     "border border-green-600 dark:border-green-500 text-green-600 dark:text-green-400 px-4 py-2 text-xs hover:bg-green-500/10 transition-all font-semibold tracking-wider uppercase",
 };
 
+const PHONE_RE = /^[+0-9\s()\-]{6,32}$/;
+
+type FieldErrors = Partial<
+  Record<"fullName" | "phone" | "company" | "email" | "message", string>
+>;
+
 export function ContactForm() {
   const t = useTranslations("Contact");
-  const [status, setStatus] = useState<
-    "IDLE" | "LOADING" | "SUCCESS" | "ERROR"
-  >("IDLE");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [status, setStatus] = useState<Status>("IDLE");
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [networkError, setNetworkError] = useState("");
+
+  // Локализуем сообщения через i18n, чтобы zod-ошибки не висели на русском
+  // в английской локали.
+  const schema = z.object({
+    fullName: z.string().trim().min(2, t("err_fullName")),
+    phone: z
+      .string()
+      .trim()
+      .min(1, t("err_phone"))
+      .regex(PHONE_RE, t("err_phone_format")),
+    company: z.string().trim().max(120).optional(),
+    email: z
+      .string()
+      .trim()
+      .min(1, t("err_email"))
+      .email(t("err_email_format")),
+    message: z.string().trim().min(10, t("err_message")),
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setStatus("LOADING");
-    setErrorMsg("");
+    setErrors({});
+    setNetworkError("");
 
     const formData = new FormData(e.currentTarget);
-    const payload = Object.fromEntries(formData.entries());
+    const raw = Object.fromEntries(formData.entries());
+
+    const result = schema.safeParse(raw);
+    if (!result.success) {
+      const fieldErrors: FieldErrors = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0];
+        if (typeof key === "string" && !(key in fieldErrors)) {
+          fieldErrors[key as keyof FieldErrors] = issue.message;
+        }
+      }
+      setErrors(fieldErrors);
+      setStatus("IDLE");
+      return;
+    }
 
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(result.data),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "PACKET_LOSS");
-      }
-
+      if (!res.ok) throw new Error("PACKET_LOSS");
       setStatus("SUCCESS");
-    } catch (err: any) {
+    } catch {
       setStatus("ERROR");
-      setErrorMsg(err.message || "UNKNOWN_NETWORK_ERROR");
+      setNetworkError(t("err_network"));
     }
   };
+
+  const fieldClass = (key: keyof FieldErrors) =>
+    `${STYLES.inputField} ${errors[key] ? STYLES.inputFieldError : ""}`;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 font-mono text-sm md:text-base items-start transition-colors duration-300">
@@ -76,7 +116,6 @@ export function ContactForm() {
         </div>
 
         <div className="space-y-4">
-          {/* TELEGRAM */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// TELEGRAM_COMM_LINK</span>
             <Link
@@ -88,7 +127,6 @@ export function ContactForm() {
             </Link>
           </div>
 
-          {/* EMAIL */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// EMAIL_E_MAIL</span>
             <Link
@@ -98,7 +136,6 @@ export function ContactForm() {
             </Link>
           </div>
 
-          {/* PHONE */}
           <div className={STYLES.contactGroup}>
             <span className={STYLES.contactLabel}>// VOICE_CELL_LINE</span>
             <Link
@@ -118,7 +155,6 @@ export function ContactForm() {
         </div>
       </div>
 
-      {/*  ФОРМА  */}
       <div className="lg:col-span-3 space-y-4 w-full">
         {status === "SUCCESS" ? (
           <div className="border border-green-500/40 bg-green-500/5 p-6 text-green-600 dark:text-green-400 space-y-4 rounded-sm animate-fadeIn">
@@ -165,50 +201,91 @@ export function ContactForm() {
               {">"} {t("title")} <span className="cursor-blink">█</span>
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4 w-full">
+            <form onSubmit={handleSubmit} className="space-y-4 w-full" noValidate>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label className={STYLES.inputLabel}>// {t("name")}</Label>
+                  <Label className={STYLES.inputLabel}>
+                    // {t("fullName")}
+                  </Label>
                   <Input
-                    required
-                    name="name"
+                    name="fullName"
                     type="text"
-                    className={STYLES.inputField}
+                    autoComplete="name"
+                    className={fieldClass("fullName")}
+                    aria-invalid={!!errors.fullName}
+                    aria-describedby={errors.fullName ? "err-fullName" : undefined}
                   />
+                  {errors.fullName && (
+                    <p id="err-fullName" className={STYLES.errorText}>
+                      // {errors.fullName}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label className={STYLES.inputLabel}>// {t("phone")}</Label>
                   <Input
                     name="phone"
                     type="tel"
-                    className={STYLES.inputField}
+                    autoComplete="tel"
+                    className={fieldClass("phone")}
+                    aria-invalid={!!errors.phone}
+                    aria-describedby={errors.phone ? "err-phone" : undefined}
                   />
+                  {errors.phone && (
+                    <p id="err-phone" className={STYLES.errorText}>
+                      // {errors.phone}
+                    </p>
+                  )}
                 </div>
               </div>
 
-              <div>
-                <Label className={STYLES.inputLabel}>// {t("email")}</Label>
-                <Input
-                  required
-                  name="email"
-                  type="email"
-                  className={STYLES.inputField}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label className={STYLES.inputLabel}>// {t("company")}</Label>
+                  <Input
+                    name="company"
+                    type="text"
+                    autoComplete="organization"
+                    className={fieldClass("company")}
+                  />
+                </div>
+                <div>
+                  <Label className={STYLES.inputLabel}>// {t("email")}</Label>
+                  <Input
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    className={fieldClass("email")}
+                    aria-invalid={!!errors.email}
+                    aria-describedby={errors.email ? "err-email" : undefined}
+                  />
+                  {errors.email && (
+                    <p id="err-email" className={STYLES.errorText}>
+                      // {errors.email}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div>
                 <Label className={STYLES.inputLabel}>// {t("comment")}</Label>
                 <Textarea
-                  required
-                  name="comment"
-                  rows={4}
-                  className={`${STYLES.inputField} resize-none`}
+                  name="message"
+                  rows={5}
+                  className={`${fieldClass("message")} resize-none`}
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? "err-message" : undefined}
                 />
+                {errors.message && (
+                  <p id="err-message" className={STYLES.errorText}>
+                    // {errors.message}
+                  </p>
+                )}
               </div>
 
-              {status === "ERROR" && (
+              {status === "ERROR" && networkError && (
                 <div className="text-red-600 dark:text-red-400 text-xs border border-red-500/30 p-3 bg-red-500/5 font-semibold">
-                  [{t("sys_error")}]: {errorMsg}
+                  [{t("sys_error")}]: {networkError}
                 </div>
               )}
 

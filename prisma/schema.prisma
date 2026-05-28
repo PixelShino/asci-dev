@@ -1,0 +1,33 @@
+// Prisma schema для прикладных данных (лиды) в Neon Postgres.
+// Payload-CMS будет жить в отдельной схеме `payload` (см. docs/plan.md).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  ARCHIVED
+}
+
+model Lead {
+  id        String     @id @default(cuid())
+  fullName  String
+  phone     String
+  company   String?
+  email     String
+  message   String
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+  @@map("leads")
+}
