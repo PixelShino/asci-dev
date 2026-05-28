@@ -53,7 +53,7 @@ export default function PortfolioClient() {
 
       <main className="relative z-10">
         <div className={activeTab === "HOME" ? "block" : "hidden"}>
-          <div className="flex flex-row gap-3 sm:gap-4 lg:gap-6 px-3 sm:px-4 lg:px-6 py-3 lg:py-4 h-[calc(100vh-200px)] animate-fadeIn">
+          <div className="flex flex-row gap-3 sm:gap-4 lg:gap-6 px-3 sm:px-4 lg:px-6 py-3 lg:py-4 h-[calc(100dvh-200px)] animate-fadeIn">
             <div className="shrink-0 w-14 sm:w-20 md:w-28 lg:w-72 xl:w-80 h-full">
               <AsciiAnim />
             </div>

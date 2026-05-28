@@ -22,7 +22,7 @@ const TOTAL_LETTERS = PIXELSHINO_LETTERS.length;
 const TOTAL_LETTER_ROWS =
   TOTAL_LETTERS * LETTER_ROWS + (TOTAL_LETTERS - 1) * GAP_ROWS;
 const CHAR_WIDTH_RATIO = 0.62;
-const MIN_FONT = 5;
+const MIN_FONT = 7;
 const MAX_FONT = 28;
 const STATIC_SEED = 1;
 const HALO_RADIUS = 1;
@@ -107,8 +107,7 @@ function buildFrame(
 }
 
 const KIND_CLASS: Record<Kind, string> = {
-  letter:
-    "text-purple-200 dark:text-purple-100 font-bold drop-shadow-[0_0_4px_rgba(176,38,255,0.85)]",
+  letter: "text-purple-200 dark:text-purple-100 font-bold",
   halo: "text-zinc-500/25 dark:text-zinc-400/20",
   noise: "text-purple-500/70 dark:text-purple-400/75",
 };
@@ -155,7 +154,19 @@ export function AsciiAnim() {
     recalc();
     const ro = new ResizeObserver(recalc);
     ro.observe(el);
-    return () => ro.disconnect();
+    // IntersectionObserver — страховка: при переключении вкладок HOME уходит в
+    // `display: none`, ResizeObserver не всегда стреляет при возврате видимости.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) recalc();
+      },
+      { threshold: 0 },
+    );
+    io.observe(el);
+    return () => {
+      ro.disconnect();
+      io.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -204,16 +215,16 @@ export function AsciiAnim() {
           `,
           backgroundSize: "20px 20px",
         }}>
-        <span className="absolute top-2 left-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
+        <span className="hidden sm:inline absolute top-2 left-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
           ┌──
         </span>
-        <span className="absolute top-2 right-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
+        <span className="hidden sm:inline absolute top-2 right-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
           ──┐
         </span>
-        <span className="absolute bottom-2 left-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
+        <span className="hidden sm:inline absolute bottom-2 left-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
           └──
         </span>
-        <span className="absolute bottom-2 right-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
+        <span className="hidden sm:inline absolute bottom-2 right-2 text-purple-500/40 dark:text-purple-400/30 text-xs z-20 select-none">
           ──┘
         </span>
 
@@ -223,7 +234,11 @@ export function AsciiAnim() {
           aria-hidden="true">
           <pre
             className="m-0 p-0 whitespace-pre select-none"
-            style={{ fontSize: `${geom.fontSize}px`, lineHeight: 1 }}>
+            style={{
+              fontSize: `${geom.fontSize}px`,
+              lineHeight: 1,
+              textShadow: "0 0 6px rgba(176, 38, 255, 0.18)",
+            }}>
             {grid.map((row, r) => (
               <Fragment key={r}>
                 {r > 0 && "\n"}
@@ -244,7 +259,7 @@ export function AsciiAnim() {
             ● ONLINE
           </span>
           <span className="hidden sm:inline tracking-widest">PIXELSHINO_V1</span>
-          <span>CORE_V2</span>
+          <span className="tabular-nums">{`${geom.cols}×${geom.rows}`}</span>
         </div>
       </div>
     </div>
