@@ -89,4 +89,4 @@ export const NOISE_CHARS = "t1i:;.,-";
 export const LETTER_STAGGER_MS = 140;
 
 /** Шаг обновления шумового фона (мс). */
-export const NOISE_TICK_MS = 180;
+export const NOISE_TICK_MS = 280;

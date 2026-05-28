@@ -42,15 +42,18 @@ function Typewriter({ text, delay = 0 }: { text: string; delay?: number }) {
 
 const STYLES = {
   glassPanel:
-    "bg-white dark:bg-zinc-950/40 border border-purple-400/20 shadow-[0_0_15px_rgba(168,85,247,0.02)] p-6 space-y-4 transition-colors duration-300",
+    "bg-white dark:bg-zinc-950/40 border border-purple-400/20 shadow-[0_0_18px_rgba(176,38,255,0.06)] dark:shadow-[inset_0_0_20px_rgba(176,38,255,0.05)] p-6 space-y-4 transition-colors duration-300",
   cliPath:
     "text-zinc-500 dark:text-zinc-500 text-sm leading-relaxed font-mono select-none",
   cliLogBorder:
-    "pl-4 border-l-2 border-purple-500/30 dark:border-purple-400/20 space-y-3 font-mono text-sm text-zinc-800 dark:text-zinc-200",
-  statBox:
-    "border border-purple-400/20 bg-zinc-50 dark:bg-zinc-900/20 p-3 flex flex-col justify-center items-center rounded-sm transition-colors duration-300",
+    "pl-4 border-l border-purple-500/30 dark:border-purple-400/20 space-y-3 font-mono text-sm text-zinc-800 dark:text-zinc-200",
+  statRow: "flex items-end gap-3 font-mono text-sm",
+  statLabel:
+    "text-zinc-600 dark:text-zinc-400 select-none lowercase tracking-wide",
+  statLead:
+    "flex-1 border-b border-dotted border-purple-400/30 dark:border-purple-400/25 mb-1.5",
   statValue:
-    "text-xl md:text-2xl text-purple-600 dark:text-purple-400 font-bold drop-shadow-[0_0_6px_rgba(168,85,247,0.2)]",
+    "text-purple-600 dark:text-purple-400 font-bold tabular-nums tracking-wide",
   btnExecute:
     "w-full border border-dashed border-purple-400/40 hover:border-purple-500 dark:hover:border-purple-400 bg-purple-500/5 hover:bg-purple-500/10 p-3 text-center transition-all duration-200 group text-sm font-mono",
 };
@@ -100,24 +103,21 @@ export function AboutSection({ onContactClick }: AboutSectionProps) {
             <span className="text-purple-600 dark:text-purple-400">$</span>{" "}
             system --stats
           </div>
-          <div className="grid grid-cols-3 gap-4 text-center font-mono mt-2">
-            <div className={STYLES.statBox}>
-              <div className={STYLES.statValue}>3.5</div>
-              <div className="text-[11px] md:text-xs text-zinc-500 dark:text-zinc-400 mt-1 select-none">
-                {t("years_exp")}
-              </div>
+          <div className="mt-2 space-y-1.5">
+            <div className={STYLES.statRow}>
+              <span className={STYLES.statLabel}>{t("years_exp")}</span>
+              <span className={STYLES.statLead} aria-hidden="true" />
+              <span className={STYLES.statValue}>3.5y</span>
             </div>
-            <div className={STYLES.statBox}>
-              <div className={STYLES.statValue}>11</div>
-              <div className="text-[11px] md:text-xs text-zinc-500 dark:text-zinc-400 mt-1 select-none">
-                {t("projects")}
-              </div>
+            <div className={STYLES.statRow}>
+              <span className={STYLES.statLabel}>{t("projects")}</span>
+              <span className={STYLES.statLead} aria-hidden="true" />
+              <span className={STYLES.statValue}>11</span>
             </div>
-            <div className={STYLES.statBox}>
-              <div className={STYLES.statValue}>FULL</div>
-              <div className="text-[11px] md:text-xs text-zinc-500 dark:text-zinc-400 mt-1 select-none">
-                {t("stack")}
-              </div>
+            <div className={STYLES.statRow}>
+              <span className={STYLES.statLabel}>{t("stack")}</span>
+              <span className={STYLES.statLead} aria-hidden="true" />
+              <span className={STYLES.statValue}>FULL</span>
             </div>
           </div>
         </div>

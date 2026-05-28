@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/themeProvider";
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "700"],
+  variable: "--font-jetbrains",
 });
 
 export const metadata: Metadata = {
@@ -42,7 +43,7 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className={jetbrainsMono.variable} suppressHydrationWarning>
       <body
         className={`${jetbrainsMono.className} antialiased bg-white dark:bg-black text-zinc-900 dark:text-zinc-200 transition-colors duration-300`}>
         <NextIntlClientProvider messages={messages} locale={locale}>

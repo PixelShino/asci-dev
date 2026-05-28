@@ -23,10 +23,24 @@ export function useGlitch() {
 
 export function GlitchProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<GlitchMode>("normal");
+  const [reducedMotion, setReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReducedMotion(mql.matches);
+    const onChange = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   // Авто-цикл normal → glitch → ascii → glitch → normal. Вложенные таймеры
-  // чистим, чтобы не оставлять висящие setTimeout при размонтировании.
+  // чистим, чтобы не оставлять висящих setTimeout при размонтировании.
+  // При `prefers-reduced-motion` цикл не запускается — режим остаётся `normal`.
   useEffect(() => {
+    if (reducedMotion) {
+      setMode("normal");
+      return;
+    }
     const timeouts: ReturnType<typeof setTimeout>[] = [];
     const interval = setInterval(() => {
       setMode("glitch");
@@ -39,7 +53,7 @@ export function GlitchProvider({ children }: { children: ReactNode }) {
       clearInterval(interval);
       timeouts.forEach(clearTimeout);
     };
-  }, []);
+  }, [reducedMotion]);
 
   return (
     <GlitchContext.Provider value={{ mode }}>{children}</GlitchContext.Provider>

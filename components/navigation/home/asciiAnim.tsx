@@ -106,10 +106,13 @@ function buildFrame(
   return grid;
 }
 
+// Контраст по яркости: буквы — против фона (светлые на тёмной теме, тёмные
+// на светлой). Не чисто-белый — приглушённый zinc-200, чтобы не «маркетингово»
+// светилось. Шум остаётся фосфорным фиолетовым, halo подкрашивает периметр.
 const KIND_CLASS: Record<Kind, string> = {
-  letter: "text-purple-200 dark:text-purple-100 font-bold",
-  halo: "text-zinc-500/25 dark:text-zinc-400/20",
-  noise: "text-purple-500/70 dark:text-purple-400/75",
+  letter: "text-zinc-800 dark:text-zinc-200 font-bold",
+  halo: "text-purple-500/40 dark:text-purple-300/40",
+  noise: "text-purple-500/80 dark:text-purple-400",
 };
 
 export function AsciiAnim() {
@@ -123,6 +126,7 @@ export function AsciiAnim() {
   const [visible, setVisible] = useState(0);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     setMounted(true);
@@ -154,11 +158,13 @@ export function AsciiAnim() {
     recalc();
     const ro = new ResizeObserver(recalc);
     ro.observe(el);
-    // IntersectionObserver — страховка: при переключении вкладок HOME уходит в
-    // `display: none`, ResizeObserver не всегда стреляет при возврате видимости.
+    // IntersectionObserver: пересчёт при возврате видимости + пауза тика шума,
+    // когда виьвер скрыт (другая вкладка) — экономим React-ре-рендеры.
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) recalc();
+        const visible = entries.some((e) => e.isIntersecting);
+        setIsVisible(visible);
+        if (visible) recalc();
       },
       { threshold: 0 },
     );
@@ -184,10 +190,10 @@ export function AsciiAnim() {
   }, [mounted, reducedMotion]);
 
   useEffect(() => {
-    if (!mounted || reducedMotion) return;
+    if (!mounted || reducedMotion || !isVisible) return;
     const id = setInterval(() => setSeed((s) => (s + 1) >>> 0), NOISE_TICK_MS);
     return () => clearInterval(id);
-  }, [mounted, reducedMotion]);
+  }, [mounted, reducedMotion, isVisible]);
 
   const grid = useMemo(
     () =>
