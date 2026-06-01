@@ -20,7 +20,16 @@
     "close_menu": "> MENU <",
     "loading": "[ LOADING... ]",
     "light_mode": "[ LIGHT_MODE ]",
-    "dark_mode": "[ DARK_MODE ]"
+    "dark_mode": "[ DARK_MODE ]",
+    "blog": "BLOG"
+  },
+  "Blog": {
+    "title": "BLOG",
+    "intro": "Notes on development, architecture and product.",
+    "meta_description": "Dmitrii Goldobin's blog — notes on fullstack development, architecture and product.",
+    "read_more": "read",
+    "back": "back to all posts",
+    "empty": "No published posts yet. Check back later."
   },
   "Contact": {
     "title": "SEND AN INVITATION",

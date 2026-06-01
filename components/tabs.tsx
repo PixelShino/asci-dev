@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TerminalNav } from "@/components/terminalNav";
+import { TerminalHeader } from "@/components/terminalHeader";
 import { AsciiAnim } from "@/components/navigation/home/asciiAnim";
 import { AboutSection } from "@/components/navigation/home/aboutSection";
 import { SkillsGrid } from "@/components/navigation/home/skillsGrid";
@@ -14,8 +15,6 @@ import { AiAssistant } from "./navigation/home/aiAssistant";
 const STYLES = {
   mainWrapper:
     "min-h-screen bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-200 font-mono relative scanlines transition-colors duration-300",
-  header:
-    "border-b border-purple-400/20 p-4 bg-white/80 dark:bg-black/50 backdrop-blur-md transition-colors duration-300",
   innerTabWrapper: "w-full px-3 sm:px-4 lg:px-6 py-3 lg:py-4",
   tabContainer:
     "min-h-[calc(100dvh-200px)] border border-purple-400/20 p-6 bg-white dark:bg-zinc-900/30 rounded-sm transition-colors duration-300",
@@ -34,20 +33,7 @@ export default function PortfolioClient() {
 
   return (
     <div className={STYLES.mainWrapper}>
-      <header className={STYLES.header}>
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 select-none">
-            <span className="text-purple-500 dark:text-purple-400">{">"}</span>
-            <span className="tracking-wider font-bold">DMITRII-GOLDOBIN</span>
-            <span className="cursor-blink text-purple-500 dark:text-purple-400">
-              █
-            </span>
-          </div>
-          <div className="text-zinc-400 dark:text-zinc-500 text-xs tracking-widest">
-            v1.0.1
-          </div>
-        </div>
-      </header>
+      <TerminalHeader />
 
       <TerminalNav activeTab={activeTab} onTabChange={setActiveTab} />
 

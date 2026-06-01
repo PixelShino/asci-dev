@@ -1,16 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 
 interface TerminalNavProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
+  // На главной приходят оба пропа (SPA-табы); в роутах блога — оба отсутствуют.
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-const TABS = ["HOME", "ABOUT", "PROJECTS", "CONTACT"];
+const TABS = ["HOME", "ABOUT", "PROJECTS", "CONTACT", "BLOG"];
 
 const STYLES = {
   nav: "border-b border-purple-400/20 bg-white dark:bg-black transition-colors duration-300 sticky top-0 z-50",
@@ -29,6 +31,8 @@ const STYLES = {
 export function TerminalNav({ activeTab, onTabChange }: TerminalNavProps) {
   const currentLocale = useLocale();
   const t = useTranslations("Nav");
+  const pathname = usePathname();
+  const router = useRouter();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -39,19 +43,54 @@ export function TerminalNav({ activeTab, onTabChange }: TerminalNavProps) {
     setMounted(true);
   }, []);
 
+  const isBlogRoute = pathname?.includes("/blog") ?? false;
+
+  // as-needed-префикс: en — без префикса, ru — с `/ru`.
+  const localeHref = (path: string) =>
+    (currentLocale === "ru" ? "/ru" : "") + path || "/";
+
+  const stripLocale = (path: string) => {
+    const segs = path.split("/");
+    if (segs[1] === "en" || segs[1] === "ru") segs.splice(1, 1);
+    const rest = segs.join("/");
+    return rest === "" ? "/" : rest;
+  };
+
   const handleLocaleChange = (newLocale: string) => {
     if (newLocale === currentLocale) return;
 
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
 
-    localStorage.setItem("terminal_active_tab", activeTab);
-
-    window.location.href = `/${newLocale}`;
+    const base = newLocale === "ru" ? "/ru" : "";
+    if (isBlogRoute) {
+      // Остаёмся на текущей странице блога (slug не локализован).
+      const rest = stripLocale(pathname ?? "/");
+      window.location.href = base + (rest === "/" ? "" : rest) || "/";
+    } else {
+      localStorage.setItem("terminal_active_tab", activeTab ?? "HOME");
+      window.location.href = base || "/";
+    }
   };
 
+  const isTabActive = (tab: string) =>
+    tab === "BLOG" ? isBlogRoute : !isBlogRoute && activeTab === tab;
+
   const handleTabSelect = (tab: string) => {
-    onTabChange(tab);
     setIsMenuOpen(false);
+
+    if (tab === "BLOG") {
+      router.push(localeHref("/blog"));
+      return;
+    }
+
+    // Домашние вкладки: на главной — переключаем состояние; из блога —
+    // уходим домой и восстанавливаем вкладку (механизм localStorage).
+    if (onTabChange && !isBlogRoute) {
+      onTabChange(tab);
+    } else {
+      localStorage.setItem("terminal_active_tab", tab);
+      router.push(localeHref(""));
+    }
   };
 
   return (
@@ -60,7 +99,7 @@ export function TerminalNav({ activeTab, onTabChange }: TerminalNavProps) {
         <div className="flex items-center justify-between h-16 font-mono">
           <div className="hidden md:flex items-center gap-2">
             {TABS.map((tab) => {
-              const isActive = activeTab === tab;
+              const isActive = isTabActive(tab);
               return (
                 <Button
                   key={tab}
