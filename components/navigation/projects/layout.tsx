@@ -1,106 +1,23 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useTranslations } from "next-intl";
 import { ProjectCard } from "./_components/ProjectCard";
 import { ProjectDetails } from "./_components/ProjectDetails";
 
+// Данные проектов приходят из Payload (см. app/[locale]/page.tsx) уже
+// локализованными — тексты прямо в объекте, без next-intl per-project.
 export type Project = {
-  id: string;
+  id: number;
+  slug: string;
+  title: string;
+  shortDesc: string;
+  fullDesc: string;
+  features: string[];
   techStack: string[];
-  imageCount: number;
-  githubUrl: string;
-  featureCount: number;
+  githubUrl?: string;
+  images: string[];
   instanceId?: string;
-  folderName: string;
 };
-
-const PROJECTS: Project[] = [
-  {
-    id: "t-catalog-admin",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind",
-      "NestJS",
-      "PostgreSQL",
-      "BullMQ",
-      "Redis",
-      "Coolify",
-      "SMTP",
-      "Robokassa",
-      "YooKassa",
-    ],
-    imageCount: 32,
-    githubUrl: "https://github.com/...",
-    featureCount: 3,
-    folderName: "t-catalog-admin",
-  },
-  {
-    id: "t-catalog-client",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Tailwind",
-      "Redux Toolkit",
-      "Supabase",
-      "Coolify",
-      "ZOD",
-      "Grammy",
-    ],
-    imageCount: 12,
-    githubUrl: "https://github.com/...",
-    featureCount: 3,
-    folderName: "t-catalog-client",
-  },
-  {
-    id: "rulme-admin",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Node.js",
-      "Supabase",
-      "Tailwind",
-      "Coolify",
-    ],
-    imageCount: 8,
-    githubUrl: "https://github.com/...",
-    featureCount: 3,
-    folderName: "rulme-admin",
-  },
-  {
-    id: "rulme-client",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "REST",
-      "TW",
-      "PM2",
-      "Grammy",
-      "Coolify",
-    ],
-    imageCount: 19,
-    githubUrl: "https://github.com/...",
-    featureCount: 3,
-    folderName: "rulme-client",
-  },
-  {
-    id: "bitovki36",
-    techStack: [
-      "Next.js",
-      "TypeScript",
-      "Supabase",
-      "TW",
-      "Docker",
-      "PM2",
-      "Grammy",
-    ],
-    imageCount: 7,
-    githubUrl: "https://github.com/...",
-    featureCount: 3,
-    folderName: "bitovki36",
-  },
-];
 
 const STYLES = {
   container:
@@ -112,14 +29,22 @@ const STYLES = {
     "h-12 w-full flex items-center justify-center text-xs text-zinc-400 font-mono tracking-widest uppercase select-none",
 };
 
-export function ProjectsLayout() {
-  const t = useTranslations("Projects");
+export function ProjectsLayout({ projects }: { projects: Project[] }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [visibleProjects, setVisibleProjects] = useState<Project[]>(() =>
-    PROJECTS.map((p, i) => ({ ...p, instanceId: `${p.id}-init-${i}` })),
+    projects.map((p, i) => ({ ...p, instanceId: `${p.slug}-init-${i}` })),
   );
 
   const triggerRef = useRef<HTMLDivElement | null>(null);
+
+  // Источник данных мог измениться (смена локали / правки в админке) —
+  // держим базовый список в синхроне, пока не открыта карточка проекта.
+  useEffect(() => {
+    if (selectedProject) return;
+    setVisibleProjects(
+      projects.map((p, i) => ({ ...p, instanceId: `${p.slug}-init-${i}` })),
+    );
+  }, [projects, selectedProject]);
 
   useEffect(() => {
     if (selectedProject) return;
@@ -129,9 +54,9 @@ export function ProjectsLayout() {
         if (entries[0].isIntersecting && window.scrollY > 10) {
           setVisibleProjects((prev) => [
             ...prev,
-            ...PROJECTS.map((p, index) => ({
+            ...projects.map((p, index) => ({
               ...p,
-              instanceId: `${p.id}-${prev.length}-${index}`,
+              instanceId: `${p.slug}-${prev.length}-${index}`,
             })),
           ]);
         }
@@ -150,12 +75,12 @@ export function ProjectsLayout() {
       }
       observer.disconnect();
     };
-  }, [selectedProject]);
+  }, [selectedProject, projects]);
 
   const handleBack = () => {
     setSelectedProject(null);
     setVisibleProjects(
-      PROJECTS.map((p, i) => ({ ...p, instanceId: `${p.id}-init-${i}` })),
+      projects.map((p, i) => ({ ...p, instanceId: `${p.slug}-init-${i}` })),
     );
   };
 
@@ -164,7 +89,7 @@ export function ProjectsLayout() {
       <h2 className={STYLES.title}>
         {">"}{" "}
         {selectedProject
-          ? `CAT ./PROJECTS/${selectedProject.id.toUpperCase()}`
+          ? `CAT ./PROJECTS/${selectedProject.slug.toUpperCase()}`
           : "LS -LA ./PROJECTS"}{" "}
         <span className="cursor-blink">█</span>
       </h2>

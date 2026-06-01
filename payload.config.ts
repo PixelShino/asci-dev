@@ -16,6 +16,7 @@ import { Categories } from "@/collections/Categories";
 import { Leads } from "@/collections/Leads";
 import { Media } from "@/collections/Media";
 import { Posts } from "@/collections/Posts";
+import { Projects } from "@/collections/Projects";
 import { Users } from "@/collections/Users";
 
 // Payload CLI (generate/migrate) не подхватывает .env.local сам — грузим явно.
@@ -45,7 +46,7 @@ export default buildConfig({
       description: "Контент и блог портфолио",
     },
   },
-  collections: [Posts, Categories, Media, Leads, Users],
+  collections: [Posts, Projects, Categories, Media, Leads, Users],
   editor: lexicalEditor(),
   localization: {
     locales: [

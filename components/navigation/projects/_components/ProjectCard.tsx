@@ -1,6 +1,5 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { Project } from "../layout";
 import { Button } from "@/components/ui/button";
 
@@ -20,16 +19,14 @@ const STYLES = {
 };
 
 export function ProjectCard({ project, onClick }: Props) {
-  const t = useTranslations("Projects");
-
   return (
     <Button
       type="button"
       variant="ghost"
       onClick={onClick}
       className={`${STYLES.card} h-auto w-full flex-col items-stretch justify-start text-left whitespace-normal`}>
-      <div className={STYLES.title}>[ {t(`${project.id}.title`)} ]</div>
-      <p className={STYLES.desc}>{t(`${project.id}.shortDesc`)}</p>
+      <div className={STYLES.title}>[ {project.title} ]</div>
+      <p className={STYLES.desc}>{project.shortDesc}</p>
       <div className={STYLES.badgeWrapper}>
         {project.techStack.slice(0, 3).map((tech) => (
           <span key={tech} className={STYLES.badge}>
