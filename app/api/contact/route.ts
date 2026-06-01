@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
 import { z } from "zod";
-import { prisma } from "@/lib/prisma";
+import { getPayloadClient } from "@/lib/payload";
 
 // Серверная схема валидации — повторяет клиентскую, но строже к границам.
 const leadSchema = z.object({
@@ -44,14 +44,18 @@ export async function POST(req: Request) {
     );
   }
 
-  const lead = await prisma.lead.create({
+  const payload = await getPayloadClient();
+  const lead = await payload.create({
+    collection: "leads",
     data: {
       fullName: parsed.fullName,
       phone: parsed.phone,
-      company: parsed.company ?? null,
+      company: parsed.company,
       email: parsed.email,
       message: parsed.message,
+      status: "new",
     },
+    overrideAccess: true,
   });
 
   const safe = {

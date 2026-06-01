@@ -13,6 +13,7 @@ import { buildConfig } from "payload";
 import sharp from "sharp";
 
 import { Categories } from "@/collections/Categories";
+import { Leads } from "@/collections/Leads";
 import { Media } from "@/collections/Media";
 import { Posts } from "@/collections/Posts";
 import { Users } from "@/collections/Users";
@@ -44,7 +45,7 @@ export default buildConfig({
       description: "Контент и блог портфолио",
     },
   },
-  collections: [Posts, Categories, Media, Users],
+  collections: [Posts, Categories, Media, Leads, Users],
   editor: lexicalEditor(),
   localization: {
     locales: [
