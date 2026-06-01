@@ -1,4 +1,5 @@
 import createNextIntlPlugin from "next-intl/plugin";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 const withNextIntl = createNextIntlPlugin("./i18n.ts");
 
@@ -23,4 +24,6 @@ const nextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+// Композиция плагинов: сначала next-intl, затем Payload (порядок важен —
+// см. docs/gotchas.md). Payload навешивает свои externals и транспайл.
+export default withPayload(withNextIntl(nextConfig));

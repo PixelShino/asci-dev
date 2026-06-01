@@ -13,9 +13,9 @@ export function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Локализуем все маршруты, КРОМЕ служебных и любых файлов с расширением
-    // (статика: .ico, .png, .webmanifest, .glb, .xml, ... — точка в пути).
+    // Локализуем все маршруты, КРОМЕ служебных, админки Payload (`/admin`) и
+    // любых файлов с расширением (статика: .ico, .png, .webmanifest, .glb, ...).
     // Прежний allowlist расширений пропускал .webmanifest и .ico → давал 404.
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    "/((?!api|admin|_next|_vercel|.*\\..*).*)",
   ],
 };
