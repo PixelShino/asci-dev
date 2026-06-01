@@ -147,7 +147,10 @@
   text-transform: uppercase;
 }
 
-/* Scanline overlay effect */
+/* Scanline overlay (ЭЛТ-эффект). Держим деликатным на обеих темах:
+   очень низкая непрозрачность и период 3px (раньше было 0.15 и 2px —
+   на светлой теме это резало глаз). На светлой — тёмные линии,
+   на тёмной — еле заметные светлые (иначе чёрное-по-чёрному не видно). */
 .scanlines::before {
   content: "";
   position: absolute;
@@ -157,13 +160,23 @@
   bottom: 0;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 0, 0, 0.15),
-    rgba(0, 0, 0, 0.15) 1px,
+    rgba(0, 0, 0, 0.04),
+    rgba(0, 0, 0, 0.04) 1px,
     transparent 1px,
-    transparent 2px
+    transparent 3px
   );
   pointer-events: none;
   z-index: 10;
+}
+
+.dark .scanlines::before {
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
 }
 
 /* Glitch-эффект на CSS — заменяет нестабильную WebGL-постобработку.
