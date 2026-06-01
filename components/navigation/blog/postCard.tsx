@@ -26,7 +26,6 @@ export function PostCard({
       href={href}
       className="group flex flex-col border border-purple-400/20 bg-white dark:bg-zinc-900/30 rounded-sm overflow-hidden transition-all duration-300 hover:border-purple-400/50 hover:drop-shadow-[0_0_10px_rgba(168,85,247,0.2)]">
       {coverUrl && (
-        // eslint-disable-next-line @next/next/no-img-element
         <div className="aspect-[16/9] overflow-hidden border-b border-purple-400/10 bg-zinc-100 dark:bg-zinc-900">
           <img
             src={coverUrl}

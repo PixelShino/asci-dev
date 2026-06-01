@@ -63,7 +63,7 @@ export function SocialFooter() {
           <span className="text-purple-600 dark:text-purple-400">~</span>
           <span className="text-zinc-400 dark:text-zinc-600">$</span>
           <span className="text-zinc-800 dark:text-zinc-200">
-            echo "{t("thanks_msg")}"
+            echo &quot;{t("thanks_msg")}&quot;
           </span>
           <span className="cursor-blink text-purple-500 dark:text-purple-400">
             █

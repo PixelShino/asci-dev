@@ -108,7 +108,6 @@ export default async function PostPage(props: Props) {
       </header>
 
       {cover?.url && (
-        // eslint-disable-next-line @next/next/no-img-element
         <div className="overflow-hidden rounded-sm border border-purple-400/15">
           <img
             src={cover.url}
